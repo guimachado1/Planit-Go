@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: planit-go-db
+    environment:
+      POSTGRES_USER: planit
+      POSTGRES_PASSWORD: planit
+      POSTGRES_DB: planit_go
+    ports:
+      - "5433:5432"
+    volumes:
+      - planit_pgdata:/var/lib/postgresql/data
+
+volumes:
+  planit_pgdata:
