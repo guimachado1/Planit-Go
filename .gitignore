@@ -7,5 +7,7 @@ frontend/dist/
 *.log
 .DS_Store
 coverage/
+.scannerwork/
+.sonar/
 .vscode/
 !.vscode/extensions.json
