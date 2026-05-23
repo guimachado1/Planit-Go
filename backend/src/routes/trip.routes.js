@@ -7,6 +7,8 @@ const r = Router();
 
 r.use(authMiddleware);
 
+r.post('/budget/suggest', tripController.suggestBudget);
+r.post('/budget/preview', tripController.previewBudget);
 r.post('/', tripController.create);
 r.get('/', tripController.list);
 
