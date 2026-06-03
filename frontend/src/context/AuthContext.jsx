@@ -6,7 +6,8 @@ import {
   useMemo,
   useState,
 } from 'react';
-import client, { setAuthToken } from '../api/client.js';
+import { setAuthToken } from '../api/client.js';
+import * as authApi from '../api/auth.js';
 
 const AuthContext = createContext(null);
 
@@ -16,6 +17,8 @@ export function AuthProvider({ children }) {
   const [token, setTokenState] = useState(() =>
     typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null
   );
+  const [user, setUser] = useState(null);
+  const [bootstrapping, setBootstrapping] = useState(Boolean(token));
 
   const setToken = useCallback((t) => {
     setTokenState(t);
@@ -25,6 +28,7 @@ export function AuthProvider({ children }) {
     } else {
       localStorage.removeItem(STORAGE_KEY);
       setAuthToken(null);
+      setUser(null);
     }
   }, []);
 
@@ -33,10 +37,32 @@ export function AuthProvider({ children }) {
     else setAuthToken(null);
   }, [token]);
 
+  useEffect(() => {
+    if (!token) {
+      setBootstrapping(false);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const me = await authApi.fetchMe();
+        if (!cancelled) setUser(me);
+      } catch {
+        if (!cancelled) setToken(null);
+      } finally {
+        if (!cancelled) setBootstrapping(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [token, setToken]);
+
   const login = useCallback(
     async (email, password) => {
-      const { data } = await client.post('/api/auth/login', { email, password });
+      const data = await authApi.login(email, password);
       setToken(data.token);
+      setUser(data.user);
       return data;
     },
     [setToken]
@@ -44,8 +70,9 @@ export function AuthProvider({ children }) {
 
   const register = useCallback(
     async (payload) => {
-      const { data } = await client.post('/api/auth/register', payload);
+      const data = await authApi.register(payload);
       setToken(data.token);
+      setUser(data.user);
       return data;
     },
     [setToken]
@@ -58,12 +85,14 @@ export function AuthProvider({ children }) {
   const value = useMemo(
     () => ({
       token,
+      user,
       isAuthenticated: Boolean(token),
+      bootstrapping,
       login,
       register,
       logout,
     }),
-    [token, login, register, logout]
+    [token, user, bootstrapping, login, register, logout]
   );
 
   return (

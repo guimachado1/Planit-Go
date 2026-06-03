@@ -1,7 +1,22 @@
 import * as tripService from '../services/trip.service.js';
+import * as tripBudgetService from '../services/tripBudget.service.js';
 import { asyncHandler } from '../middleware/asyncHandler.js';
 
+export const suggestBudget = asyncHandler(async (req, res) => {
+  const result = tripBudgetService.suggestBudget(req.body);
+  res.json(result);
+});
+
+export const previewBudget = asyncHandler(async (req, res) => {
+  const result = tripBudgetService.previewBudget(req.body);
+  res.json(result);
+});
+
 export const create = asyncHandler(async (req, res) => {
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('req.user:', req.user);
+    console.log('userId repassado ao service:', req.user?.id);
+  }
   const trip = await tripService.createTrip({
     userId: req.user.id,
     ...req.body,
