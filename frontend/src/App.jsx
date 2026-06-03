@@ -1,20 +1,29 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
-import { Layout } from './components/Layout.jsx';
+import { ProtectedRoute } from './components/ProtectedRoute.jsx';
 import { LoginPage } from './pages/LoginPage.jsx';
 import { RegisterPage } from './pages/RegisterPage.jsx';
 import { TripsPage } from './pages/TripsPage.jsx';
+import { CreateTripPage } from './pages/CreateTripPage.jsx';
+import { TripBudgetPage } from './pages/TripBudgetPage.jsx';
+import { TripDetailPage } from './pages/TripDetailPage.jsx';
 
 export default function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route element={<Layout />}>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        <Route element={<ProtectedRoute />}>
           <Route path="/viagens" element={<TripsPage />} />
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/viagens/nova" element={<CreateTripPage />} />
+          <Route path="/viagens/nova/orcamento" element={<TripBudgetPage />} />
+          <Route path="/viagens/:id" element={<TripDetailPage />} />
         </Route>
+
+        <Route path="/" element={<Navigate to="/viagens" replace />} />
+        <Route path="*" element={<Navigate to="/viagens" replace />} />
       </Routes>
     </AuthProvider>
   );

@@ -1,31 +1,27 @@
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import client from '../api/client.js';
-import { useAuth } from '../context/AuthContext.jsx';
+import { Link } from 'react-router-dom';
+import { Plane, Plus } from 'lucide-react';
+import { AppShell } from '../components/layout/AppShell.jsx';
+import { TripCard } from '../components/trips/TripCard.jsx';
+import * as tripsApi from '../api/trips.js';
+import { getApiErrorMessage } from '../utils/errors.js';
 
 export function TripsPage() {
-  const { isAuthenticated, token } = useAuth();
   const [trips, setTrips] = useState([]);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!token) return;
-    client.defaults.headers.common.Authorization = `Bearer ${token}`;
     let cancelled = false;
     (async () => {
       setLoading(true);
       setError('');
       try {
-        const { data } = await client.get('/api/trips');
-        if (!cancelled) setTrips(data.trips || []);
+        const list = await tripsApi.listTrips();
+        if (!cancelled) setTrips(list);
       } catch (err) {
         if (!cancelled) {
-          setError(
-            err.response?.data?.error ||
-              err.message ||
-              'Não foi possível carregar as viagens.'
-          );
+          setError(getApiErrorMessage(err, 'Não foi possível carregar as viagens.'));
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -34,39 +30,49 @@ export function TripsPage() {
     return () => {
       cancelled = true;
     };
-  }, [token]);
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+  }, []);
 
   return (
-    <div style={{ width: '100%', maxWidth: 640 }}>
-      <h1 style={{ marginTop: 0 }}>Suas viagens</h1>
-      <p className="muted">
-        Lista mínima consumindo <code>GET /api/trips</code>. Telas e layout do Figma
-        entram na próxima iteração.
-      </p>
-      {loading ? <p>Carregando…</p> : null}
-      {error ? <p className="error">{error}</p> : null}
-      {!loading && !error && trips.length === 0 ? (
-        <p>Nenhuma viagem ainda. Em seguida adicionamos o fluxo de criação.</p>
-      ) : null}
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-        {trips.map((t) => (
-          <li
-            key={t.id}
-            className="card"
-            style={{ marginBottom: '0.75rem', maxWidth: '100%' }}
-          >
-            <strong>{t.destination}</strong>
-            <div className="muted">
-              {t.startDate} → {t.endDate} · Orçamento: {t.totalBudget} · Perfil:{' '}
-              {t.profile}
+    <AppShell>
+      <div className="container container--wide">
+        <h1 className="page-title">Suas viagens</h1>
+        <p className="page-subtitle">
+          Planeje, distribua o orçamento por categoria e acompanhe cada destino.
+        </p>
+
+        {loading ? (
+          <div className="spinner-wrap">
+            <div className="spinner" />
+            <p>Carregando…</p>
+          </div>
+        ) : null}
+
+        {error ? <div className="alert alert--error">{error}</div> : null}
+
+        {!loading && !error && trips.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state__icon-wrap">
+              <Plane size={40} />
             </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+            <h2>Nenhuma viagem planejada</h2>
+            <p style={{ color: 'var(--muted-foreground)', marginBottom: '1.5rem' }}>
+              O mundo é enorme. Comece criando sua primeira aventura!
+            </p>
+            <Link to="/viagens/nova" className="btn btn--primary btn--lg">
+              <Plus size={18} />
+              Criar primeira viagem
+            </Link>
+          </div>
+        ) : null}
+
+        {!loading && trips.length > 0 ? (
+          <div className="trip-grid">
+            {trips.map((trip) => (
+              <TripCard key={trip.id} trip={trip} />
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </AppShell>
   );
 }

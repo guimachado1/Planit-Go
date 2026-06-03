@@ -11,3 +11,4 @@ coverage/
 .sonar/
 .vscode/
 !.vscode/extensions.json
+design-reference/
