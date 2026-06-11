@@ -1,3 +1,13 @@
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft, MapPin, Calendar, Loader2 } from 'lucide-react';
+import { AppShell } from '../components/layout/AppShell.jsx';
+import { ExpenseForm } from '../components/expenses/ExpenseForm.jsx';
+import { ExpenseList } from '../components/expenses/ExpenseList.jsx';
+import { FinancialSummary } from '../components/expenses/FinancialSummary.jsx';
+import { CategoryBudgetComparison } from '../components/expenses/CategoryBudgetComparison.jsx';
+import { useTripFinances } from '../hooks/useTripFinances.js';
+import { formatDateBR } from '../utils/format.js';
+import { getProfileLabel } from '../constants/tripProfiles.js';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, MapPin, Calendar, Wallet } from 'lucide-react';
@@ -12,6 +22,15 @@ import { getTripCoverStyle } from '../utils/tripVisuals.js';
 export function TripDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const {
+    trip,
+    summary,
+    expenses,
+    loading,
+    refreshing,
+    error,
+    addExpense,
+  } = useTripFinances(id);
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -73,6 +92,12 @@ export function TripDetailPage() {
             <ArrowLeft size={18} />
             Voltar
           </button>
+          {refreshing ? (
+            <span className="page-subtitle" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Loader2 size={16} style={{ animation: 'spin 0.8s linear infinite' }} />
+              Atualizando…
+            </span>
+          ) : null}
         </div>
 
         <div className="detail-hero" style={getTripCoverStyle(trip.profile)}>
@@ -91,6 +116,18 @@ export function TripDetailPage() {
           </div>
         </div>
 
+        <FinancialSummary summary={summary} />
+        <div style={{ marginTop: '1.25rem' }}>
+          <CategoryBudgetComparison summary={summary} />
+        </div>
+
+        <div className="detail-expenses-grid">
+          <ExpenseForm onSubmit={addExpense} disabled={refreshing} />
+          <ExpenseList expenses={expenses} loading={refreshing} />
+        </div>
+
+        <p className="page-subtitle" style={{ marginTop: '1.5rem', marginBottom: 0 }}>
+          Viagem criada em {formatDateBR(String(trip.createdAt).slice(0, 10))}
         <div className="card">
           <div className="card__header">
             <h2 className="card__title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

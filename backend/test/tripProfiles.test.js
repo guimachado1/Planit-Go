@@ -1,8 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  suggestBudgetByProfile,
   TRIP_PROFILES,
+  BUDGET_CATEGORIES,
+  isValidProfileKey,
 } from '../src/constants/tripProfiles.js';
 
 test('cada perfil soma 100%', () => {
@@ -13,14 +14,21 @@ test('cada perfil soma 100%', () => {
   }
 });
 
-test('sugestão de orçamento soma o total (centavos)', () => {
-  const total = 1000;
+test('BUDGET_CATEGORIES contém as quatro categorias RF02', () => {
+  assert.deepEqual(BUDGET_CATEGORIES, [
+    'transport',
+    'accommodation',
+    'food',
+    'activities',
+  ]);
+});
+
+test('isValidProfileKey aceita perfis conhecidos', () => {
   for (const key of Object.keys(TRIP_PROFILES)) {
-    const s = suggestBudgetByProfile(key, total);
-    const sum = Object.values(s).reduce(
-      (a, v) => a + Number(v),
-      0
-    );
-    assert.equal(Math.round(sum * 100) / 100, total);
+    assert.equal(isValidProfileKey(key), true);
   }
+});
+
+test('isValidProfileKey rejeita perfil desconhecido', () => {
+  assert.equal(isValidProfileKey('cruise'), false);
 });
