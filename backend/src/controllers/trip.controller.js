@@ -13,10 +13,6 @@ export const previewBudget = asyncHandler(async (req, res) => {
 });
 
 export const create = asyncHandler(async (req, res) => {
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('req.user:', req.user);
-    console.log('userId repassado ao service:', req.user?.id);
-  }
   const trip = await tripService.createTrip({
     userId: req.user.id,
     ...req.body,
