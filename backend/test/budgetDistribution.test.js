@@ -46,3 +46,13 @@ test('perfil urban distribui 20% em transporte para 1000', () => {
   const { byCategory } = calculateAutomaticDistribution('urban', 1000);
   assert.equal(byCategory.transport, '200.00');
 });
+
+test('distribuição ajusta centavos para fechar o total exato', () => {
+  const total = 1001;
+  const { byCategory } = calculateAutomaticDistribution('urban', total);
+  const sum = Object.values(byCategory).reduce(
+    (a, v) => a + Number(v),
+    0
+  );
+  assert.equal(Math.round(sum * 100) / 100, total);
+});

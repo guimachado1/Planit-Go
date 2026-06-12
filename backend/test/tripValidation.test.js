@@ -2,8 +2,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { AppError } from '../src/errors/AppError.js';
 import {
+  parseMoney,
   resolveBudgetLines,
   validateCreateTripPayload,
+  validateDestination,
   validateProfile,
   validateTotalBudget,
 } from '../src/domain/trip/tripValidation.js';
@@ -140,6 +142,48 @@ test('datas inválidas na criação são rejeitadas', () => {
         profile: 'urban',
       }),
     (err) => err instanceof AppError
+  );
+});
+
+test('parseMoney rejeita valores inválidos', () => {
+  assert.equal(parseMoney(null), null);
+  assert.equal(parseMoney(''), null);
+  assert.equal(parseMoney('abc'), null);
+  assert.equal(parseMoney(12.345), 12.35);
+});
+
+test('destino muito curto ou longo é rejeitado', () => {
+  assert.throws(
+    () => validateDestination('A'),
+    (err) => err instanceof AppError
+  );
+  assert.throws(
+    () => validateDestination('x'.repeat(501)),
+    (err) => err instanceof AppError && err.message.includes('longo')
+  );
+});
+
+test('orçamento acima do limite é rejeitado', () => {
+  assert.throws(
+    () => validateTotalBudget(100_000_000),
+    (err) => err instanceof AppError && err.message.includes('limite')
+  );
+});
+
+test('valor negativo em categoria manual é rejeitado', () => {
+  assert.throws(
+    () =>
+      resolveBudgetLines({
+        profile: 'urban',
+        totalBudget: 1000,
+        categoryAmounts: {
+          transport: -1,
+          accommodation: 250,
+          food: 250,
+          activities: 250,
+        },
+      }),
+    (err) => err instanceof AppError && err.message.includes('inválido')
   );
 });
 

@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { calculateAutomaticDistribution } from '../src/domain/budget/distribution.js';
 import {
   TRIP_PROFILES,
   BUDGET_CATEGORIES,
@@ -26,6 +27,22 @@ test('BUDGET_CATEGORIES contém as quatro categorias RF02', () => {
 test('isValidProfileKey aceita perfis conhecidos', () => {
   for (const key of Object.keys(TRIP_PROFILES)) {
     assert.equal(isValidProfileKey(key), true);
+  }
+});
+
+test('isValidProfileKey rejeita perfil desconhecido', () => {
+  assert.equal(isValidProfileKey('cruise'), false);
+});
+
+test('sugestão de orçamento soma o total (centavos)', () => {
+  const total = 1000;
+  for (const key of Object.keys(TRIP_PROFILES)) {
+    const { byCategory } = calculateAutomaticDistribution(key, total);
+    const sum = Object.values(byCategory).reduce(
+      (a, v) => a + Number(v),
+      0
+    );
+    assert.equal(Math.round(sum * 100) / 100, total);
   }
 });
 
