@@ -45,3 +45,7 @@ test('sugestão de orçamento soma o total (centavos)', () => {
     assert.equal(Math.round(sum * 100) / 100, total);
   }
 });
+
+test('isValidProfileKey rejeita perfil desconhecido', () => {
+  assert.equal(isValidProfileKey('cruise'), false);
+});
