@@ -499,6 +499,18 @@ a:hover {
   border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
+.alert--success {
+  background: rgba(16, 185, 129, 0.08);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.alert--warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
 /* ——— Badges ——— */
 .badge {
   display: inline-block;
@@ -1076,4 +1088,102 @@ a:hover {
 .expense-empty p {
   margin: 0.75rem 0 0;
   font-size: 0.9rem;
+}
+
+/* ——— Alertas por categoria (RF06) ——— */
+.category-compare-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.category-compare-summary-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.12);
+  color: #b45309;
+  white-space: nowrap;
+  align-self: center;
+}
+
+.category-compare--warning {
+  padding-left: 0.75rem;
+  border-left: 3px solid #f59e0b;
+}
+
+.category-compare--over {
+  padding-left: 0.75rem;
+  border-left: 3px solid #ef4444;
+  background: rgba(239, 68, 68, 0.03);
+  margin-left: -0.25rem;
+  padding-right: 0.25rem;
+  border-radius: var(--radius);
+}
+
+.category-compare__status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.category-compare__status svg {
+  flex-shrink: 0;
+}
+
+.category-compare--warning .category-compare__status svg {
+  color: #d97706;
+}
+
+.category-compare--over .category-compare__status svg {
+  color: #dc2626;
+}
+
+.category-compare__pct--ok {
+  color: var(--primary);
+}
+
+.category-compare__pct--warning {
+  color: #b45309;
+}
+
+.category-compare__pct--over {
+  color: #b91c1c;
+}
+
+.progress-fill--ok {
+  background: linear-gradient(90deg, var(--primary), #0d9488);
+}
+
+.progress-fill--warning {
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+}
+
+.progress-fill--over {
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.budget-status-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.budget-status-badge--warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #b45309;
+}
+
+.budget-status-badge--over {
+  background: rgba(239, 68, 68, 0.12);
+  color: #b91c1c;
 }
