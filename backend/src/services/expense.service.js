@@ -1,4 +1,5 @@
 import { BUDGET_CATEGORIES } from '../constants/tripProfiles.js';
+import { buildBudgetAlertSummary } from '../domain/budget/budgetAlerts.js';
 import * as expenseRepo from '../repositories/expense.repository.js';
 import * as tripRepo from '../repositories/trip.repository.js';
 
@@ -92,12 +93,19 @@ export async function getFinancialSummary(userId, tripId) {
   const totalSpent = categories.reduce((a, x) => a + x.spent, 0);
   const totalRemaining = Math.round((totalPlanned - totalSpent) * 100) / 100;
 
+  const { byCategory, alerts } = buildBudgetAlertSummary(
+    categories,
+    totalPlanned,
+    totalSpent
+  );
+
   return {
     tripId: trip.id,
     destination: trip.destination,
     totalBudget: totalPlanned,
     totalSpent,
     totalRemaining,
-    byCategory: categories,
+    byCategory,
+    alerts,
   };
 }

@@ -23,19 +23,7 @@ function assertPassword(password) {
   }
 }
 
-export async function register({
-  email,
-  password,
-  fullName,
-  acceptPrivacyPolicy,
-}) {
-  if (!acceptPrivacyPolicy) {
-    const err = new Error(
-      'É necessário aceitar a política de privacidade e o tratamento dos dados (LGPD).'
-    );
-    err.status = 400;
-    throw err;
-  }
+export async function register({ email, password, fullName }) {
   const e = assertEmail(email);
   assertPassword(password);
   const name = String(fullName || '').trim();

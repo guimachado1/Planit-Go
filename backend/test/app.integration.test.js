@@ -93,7 +93,6 @@ test('POST /api/auth/register cria conta', async () => {
     email: 'teste@example.com',
     password: 'senha12345',
     fullName: 'Teste User',
-    acceptPrivacyPolicy: true,
   });
 
   assert.equal(res.status, 201);

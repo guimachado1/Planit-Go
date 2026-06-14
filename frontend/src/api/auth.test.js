@@ -30,7 +30,6 @@ describe('auth api', () => {
       email: 'a@b.com',
       password: 'senha12345',
       fullName: 'Nome',
-      acceptPrivacyPolicy: true,
     };
     post.mockResolvedValue({ data: { token: 't2', user: { id: '2' } } });
     await register(payload);

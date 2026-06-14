@@ -209,6 +209,9 @@ test('getFinancialSummary monta totais por categoria', async () => {
   assert.equal(food.planned, 300);
   assert.equal(food.spent, 80);
   assert.equal(food.remaining, 220);
+  assert.equal(food.percentUsed, Math.round((80 / 300) * 1000) / 10);
+  assert.equal(food.alertLevel, 'ok');
+  assert.equal(summary.alerts.overall.alertLevel, 'ok');
 });
 
 test('getFinancialSummary retorna 404 quando viagem não existe', async () => {

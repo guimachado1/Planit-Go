@@ -26,19 +26,6 @@ afterEach(() => {
   restorePoolMock();
 });
 
-test('register rejeita sem aceitar política de privacidade', async () => {
-  await assert.rejects(
-    () =>
-      authService.register({
-        email: 'a@b.com',
-        password: 'senha12345',
-        fullName: 'Nome',
-        acceptPrivacyPolicy: false,
-      }),
-    (err) => err.status === 400
-  );
-});
-
 test('register rejeita e-mail inválido', async () => {
   await assert.rejects(
     () =>
@@ -46,7 +33,6 @@ test('register rejeita e-mail inválido', async () => {
         email: 'invalido',
         password: 'senha12345',
         fullName: 'Nome',
-        acceptPrivacyPolicy: true,
       }),
     (err) => err.status === 400 && err.message.includes('E-mail')
   );
@@ -59,7 +45,6 @@ test('register rejeita senha curta', async () => {
         email: 'a@b.com',
         password: '123',
         fullName: 'Nome',
-        acceptPrivacyPolicy: true,
       }),
     (err) => err.status === 400 && err.message.includes('senha')
   );
@@ -72,7 +57,6 @@ test('register rejeita nome curto', async () => {
         email: 'a@b.com',
         password: 'senha12345',
         fullName: 'A',
-        acceptPrivacyPolicy: true,
       }),
     (err) => err.status === 400 && err.message.includes('nome')
   );
@@ -92,7 +76,6 @@ test('register rejeita e-mail duplicado', async () => {
         email: 'teste@example.com',
         password: 'senha12345',
         fullName: 'Nome',
-        acceptPrivacyPolicy: true,
       }),
     (err) => err.status === 409
   );
@@ -113,7 +96,6 @@ test('register cria usuário e retorna token', async () => {
     email: 'teste@example.com',
     password: 'senha12345',
     fullName: 'Teste User',
-    acceptPrivacyPolicy: true,
   });
 
   assert.equal(result.user.email, 'teste@example.com');

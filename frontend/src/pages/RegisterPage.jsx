@@ -10,7 +10,6 @@ export function RegisterPage() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [acceptPrivacyPolicy, setAcceptPrivacyPolicy] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -21,17 +20,12 @@ export function RegisterPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-    if (!acceptPrivacyPolicy) {
-      setError('É necessário aceitar a política de privacidade (LGPD).');
-      return;
-    }
     setLoading(true);
     try {
       await register({
         fullName,
         email,
         password,
-        acceptPrivacyPolicy: true,
       });
       navigate('/viagens');
     } catch (err) {
@@ -84,14 +78,6 @@ export function RegisterPage() {
               minLength={8}
             />
           </div>
-          <label style={{ display: 'flex', gap: '0.5rem', fontSize: '0.875rem' }}>
-            <input
-              type="checkbox"
-              checked={acceptPrivacyPolicy}
-              onChange={(e) => setAcceptPrivacyPolicy(e.target.checked)}
-            />
-            Aceito o tratamento dos meus dados conforme a política de privacidade (LGPD).
-          </label>
           {error ? <div className="alert alert--error">{error}</div> : null}
           <button type="submit" className="btn btn--primary btn--block btn--lg" disabled={loading}>
             {loading ? (
