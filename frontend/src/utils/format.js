@@ -18,3 +18,10 @@ export function formatDateBR(isoDate) {
 export function formatDateRange(startDate, endDate) {
   return `${formatDateBR(startDate)} – ${formatDateBR(endDate)}`;
 }
+
+/** HH:MM ou HH:MM:SS → HH:MM */
+export function formatTime(value) {
+  if (!value) return '';
+  const s = String(value);
+  return s.length >= 5 ? s.slice(0, 5) : s;
+}

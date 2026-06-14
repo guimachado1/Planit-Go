@@ -1,40 +1,39 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, MapPin, Calendar, Loader2, Route } from 'lucide-react';
+import { ArrowLeft, Calendar, Loader2, MapPin, Wallet } from 'lucide-react';
 import { AppShell } from '../components/layout/AppShell.jsx';
-import { ExpenseForm } from '../components/expenses/ExpenseForm.jsx';
-import { ExpenseList } from '../components/expenses/ExpenseList.jsx';
-import { FinancialSummary } from '../components/expenses/FinancialSummary.jsx';
-import { CategoryBudgetComparison } from '../components/expenses/CategoryBudgetComparison.jsx';
-import { useTripFinances } from '../hooks/useTripFinances.js';
+import { ItineraryItemForm } from '../components/itinerary/ItineraryItemForm.jsx';
+import { ItineraryDaySection } from '../components/itinerary/ItineraryDaySection.jsx';
+import { useTripItinerary } from '../hooks/useTripItinerary.js';
 import { formatDateBR } from '../utils/format.js';
 import { getProfileLabel } from '../constants/tripProfiles.js';
 import { getTripCoverStyle } from '../utils/tripVisuals.js';
 
-export function TripDetailPage() {
+export function TripItineraryPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const {
     trip,
-    summary,
-    expenses,
+    itinerary,
     loading,
     refreshing,
     error,
-    addExpense,
-  } = useTripFinances(id);
+    addItem,
+    updateItem,
+    removeItem,
+  } = useTripItinerary(id);
 
   if (loading) {
     return (
       <AppShell>
         <div className="spinner-wrap">
           <div className="spinner" />
-          <p>Carregando viagem…</p>
+          <p>Carregando itinerário…</p>
         </div>
       </AppShell>
     );
   }
 
-  if (error || !trip) {
+  if (error || !trip || !itinerary) {
     return (
       <AppShell>
         <div className="container" style={{ textAlign: 'center' }}>
@@ -51,23 +50,23 @@ export function TripDetailPage() {
     <AppShell>
       <div className="container container--wide">
         <div className="page-header-row">
-          <button type="button" className="btn btn--ghost" onClick={() => navigate('/viagens')}>
+          <button type="button" className="btn btn--ghost" onClick={() => navigate(`/viagens/${id}`)}>
             <ArrowLeft size={18} />
-            Voltar
+            Finanças
           </button>
           <div className="page-header-row__actions">
-            <Link to={`/viagens/${id}/itinerario`} className="btn btn--outline btn--sm">
-              <Route size={16} />
-              Itinerário
+            <Link to={`/viagens/${id}`} className="btn btn--outline btn--sm">
+              <Wallet size={16} />
+              Orçamento e gastos
             </Link>
             {refreshing ? (
-            <span
-              className="page-subtitle"
-              style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.35rem' }}
-            >
-              <Loader2 size={16} style={{ animation: 'spin 0.8s linear infinite' }} />
-              Atualizando…
-            </span>
+              <span
+                className="page-subtitle"
+                style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+              >
+                <Loader2 size={16} style={{ animation: 'spin 0.8s linear infinite' }} />
+                Atualizando…
+              </span>
             ) : null}
           </div>
         </div>
@@ -75,6 +74,7 @@ export function TripDetailPage() {
         <div className="detail-hero" style={getTripCoverStyle(trip.profile)}>
           <div className="detail-hero__content">
             <h2>{trip.destination}</h2>
+            <p className="detail-hero__subtitle">Itinerário diário</p>
             <div className="detail-hero__chips">
               <span className="detail-chip">
                 <MapPin size={14} />
@@ -88,19 +88,25 @@ export function TripDetailPage() {
           </div>
         </div>
 
-        <FinancialSummary summary={summary} />
-        <div style={{ marginTop: '1.25rem' }}>
-          <CategoryBudgetComparison summary={summary} />
+        <div className="itinerary-layout">
+          <ItineraryItemForm
+            days={itinerary.days}
+            onSubmit={addItem}
+            disabled={refreshing}
+          />
+          <div className="itinerary-timeline">
+            {itinerary.days.map((day) => (
+              <ItineraryDaySection
+                key={day.date}
+                day={day}
+                days={itinerary.days}
+                onUpdate={updateItem}
+                onDelete={removeItem}
+                disabled={refreshing}
+              />
+            ))}
+          </div>
         </div>
-
-        <div className="detail-expenses-grid">
-          <ExpenseForm onSubmit={addExpense} disabled={refreshing} />
-          <ExpenseList expenses={expenses} loading={refreshing} />
-        </div>
-
-        <p className="page-subtitle" style={{ marginTop: '1.5rem', marginBottom: 0 }}>
-          Viagem criada em {formatDateBR(String(trip.createdAt).slice(0, 10))}
-        </p>
       </div>
     </AppShell>
   );
