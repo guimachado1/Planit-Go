@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, MapPin, Calendar, Loader2, Route } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Loader2, Route, FileText } from 'lucide-react';
 import { AppShell } from '../components/layout/AppShell.jsx';
 import { ExpenseForm } from '../components/expenses/ExpenseForm.jsx';
 import { ExpenseList } from '../components/expenses/ExpenseList.jsx';
@@ -9,6 +9,7 @@ import { useTripFinances } from '../hooks/useTripFinances.js';
 import { formatDateBR } from '../utils/format.js';
 import { getProfileLabel } from '../constants/tripProfiles.js';
 import { getTripCoverStyle, resolveTripDisplayStatus } from '../utils/tripVisuals.js';
+import { TRIP_STATUS } from '../constants/tripStatus.js';
 
 export function TripDetailPage() {
   const { id } = useParams();
@@ -49,6 +50,7 @@ export function TripDetailPage() {
 
   const coverStyle = getTripCoverStyle(trip.profile);
   const tripStatus = resolveTripDisplayStatus(trip);
+  const isFinal = tripStatus.status === TRIP_STATUS.COMPLETED;
 
   return (
     <AppShell>
@@ -59,6 +61,13 @@ export function TripDetailPage() {
             Voltar
           </button>
           <div className="page-header-row__actions">
+            <Link
+              to={`/viagens/${id}/relatorio`}
+              className={`btn btn--sm ${isFinal ? 'btn--primary' : 'btn--outline'}`}
+            >
+              <FileText size={16} />
+              {isFinal ? 'Relatório final' : 'Relatório'}
+            </Link>
             <Link to={`/viagens/${id}/itinerario`} className="btn btn--outline btn--sm">
               <Route size={16} />
               Itinerário

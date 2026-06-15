@@ -8,6 +8,7 @@ import { CreateTripPage } from './pages/CreateTripPage.jsx';
 import { TripBudgetPage } from './pages/TripBudgetPage.jsx';
 import { TripDetailPage } from './pages/TripDetailPage.jsx';
 import { TripItineraryPage } from './pages/TripItineraryPage.jsx';
+import { TripReportPage } from './pages/TripReportPage.jsx';
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/viagens/nova/orcamento" element={<TripBudgetPage />} />
           <Route path="/viagens/:id" element={<TripDetailPage />} />
           <Route path="/viagens/:id/itinerario" element={<TripItineraryPage />} />
+          <Route path="/viagens/:id/relatorio" element={<TripReportPage />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/viagens" replace />} />
