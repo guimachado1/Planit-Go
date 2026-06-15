@@ -1,6 +1,7 @@
 import { pool } from '../config/database.js';
 import { TRIP_PROFILES } from '../constants/tripProfiles.js';
 import { buildBudgetSummary } from '../domain/trip/budgetSummary.js';
+import { resolveTripStatus } from '../domain/trip/tripStatus.js';
 import { validateCreateTripPayload } from '../domain/trip/tripValidation.js';
 import { AppError } from '../errors/AppError.js';
 import * as tripRepo from '../repositories/trip.repository.js';
@@ -43,7 +44,15 @@ export async function createTrip(input) {
 
 export async function listTrips(userId) {
   const rows = await tripRepo.listTripsByUser(userId);
-  return rows.map((row) => ({
+  return rows.map((row) => formatTripListItem(row));
+}
+
+function formatTripListItem(row) {
+  const { status, label: statusLabel } = resolveTripStatus(
+    row.start_date,
+    row.end_date
+  );
+  return {
     id: row.id,
     destination: row.destination,
     startDate: row.start_date,
@@ -51,9 +60,11 @@ export async function listTrips(userId) {
     totalBudget: row.total_budget,
     profile: row.profile,
     profileLabel: TRIP_PROFILES[row.profile]?.label ?? row.profile,
+    status,
+    statusLabel,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
-  }));
+  };
 }
 
 export async function getTripDetail(tripId, userId) {
@@ -71,6 +82,10 @@ function formatTrip(row, budgetLines) {
     plannedAmount: b.planned_amount,
   }));
   const profileMeta = TRIP_PROFILES[row.profile];
+  const { status, label: statusLabel } = resolveTripStatus(
+    row.start_date,
+    row.end_date
+  );
 
   return {
     id: row.id,
@@ -80,6 +95,8 @@ function formatTrip(row, budgetLines) {
     totalBudget: row.total_budget,
     profile: row.profile,
     profileLabel: profileMeta?.label ?? row.profile,
+    status,
+    statusLabel,
     budgetLines: lines,
     budget: {
       lines,

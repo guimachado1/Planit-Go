@@ -818,6 +818,11 @@ a:hover {
   z-index: 1;
 }
 
+.detail-hero__status {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
 .detail-hero h2 {
   margin: 0;
   font-size: 1.75rem;

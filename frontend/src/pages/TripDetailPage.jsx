@@ -8,7 +8,7 @@ import { CategoryBudgetComparison } from '../components/expenses/CategoryBudgetC
 import { useTripFinances } from '../hooks/useTripFinances.js';
 import { formatDateBR } from '../utils/format.js';
 import { getProfileLabel } from '../constants/tripProfiles.js';
-import { getTripCoverStyle } from '../utils/tripVisuals.js';
+import { getTripCoverStyle, resolveTripDisplayStatus } from '../utils/tripVisuals.js';
 
 export function TripDetailPage() {
   const { id } = useParams();
@@ -47,6 +47,9 @@ export function TripDetailPage() {
     );
   }
 
+  const coverStyle = getTripCoverStyle(trip.profile);
+  const tripStatus = resolveTripDisplayStatus(trip);
+
   return (
     <AppShell>
       <div className="container container--wide">
@@ -72,8 +75,11 @@ export function TripDetailPage() {
           </div>
         </div>
 
-        <div className="detail-hero" style={getTripCoverStyle(trip.profile)}>
+        <div className="detail-hero" style={coverStyle}>
           <div className="detail-hero__content">
+            <span className={`badge badge--${tripStatus.variant} detail-hero__status`}>
+              {tripStatus.label}
+            </span>
             <h2>{trip.destination}</h2>
             <div className="detail-hero__chips">
               <span className="detail-chip">

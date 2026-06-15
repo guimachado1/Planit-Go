@@ -146,6 +146,8 @@ test('listTrips retorna viagens do usuário', async () => {
   assert.equal(trips.length, 1);
   assert.equal(trips[0].destination, 'Curitiba');
   assert.equal(trips[0].profileLabel, 'Urbana / Cidade grande');
+  assert.equal(trips[0].status, 'planned');
+  assert.equal(trips[0].statusLabel, 'Planejada');
 });
 
 test('getTripDetail retorna 404 quando viagem não existe', async () => {
@@ -162,6 +164,8 @@ test('getTripDetail retorna viagem formatada', async () => {
 
   const trip = await tripService.getTripDetail(tripId, userId);
   assert.equal(trip.profile, 'urban');
+  assert.equal(trip.status, 'planned');
+  assert.equal(trip.statusLabel, 'Planejada');
   assert.equal(trip.budget.percentages.transport, 20);
   assert.equal(trip.budget.summary.totalBudget, '1000.00');
 });

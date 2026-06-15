@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Wallet } from 'lucide-react';
 import { formatCurrency, formatDateBR } from '../../utils/format.js';
 import { getProfileLabel } from '../../constants/tripProfiles.js';
-import { getTripCoverStyle, getTripStatus } from '../../utils/tripVisuals.js';
+import { getTripCoverStyle, resolveTripDisplayStatus } from '../../utils/tripVisuals.js';
 
 export function TripCard({ trip }) {
-  const status = getTripStatus(trip.startDate, trip.endDate);
+  const status = resolveTripDisplayStatus(trip);
   const coverStyle = getTripCoverStyle(trip.profile);
 
   return (
