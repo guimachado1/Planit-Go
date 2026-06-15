@@ -1,4 +1,5 @@
 import { BUDGET_CATEGORIES } from '../constants/tripProfiles.js';
+import { normalizeDateOnly } from '../domain/dateOnly.js';
 import { buildBudgetAlertSummary } from '../domain/budget/budgetAlerts.js';
 import * as expenseRepo from '../repositories/expense.repository.js';
 import * as tripRepo from '../repositories/trip.repository.js';
@@ -36,6 +37,21 @@ export async function addExpense(userId, tripId, body) {
     err.status = 400;
     throw err;
   }
+  const spentDay = normalizeDateOnly(spentAt);
+  if (!spentDay) {
+    const err = new Error('Data do gasto inválida.');
+    err.status = 400;
+    throw err;
+  }
+  const tripStart = normalizeDateOnly(trip.start_date);
+  const tripEnd = normalizeDateOnly(trip.end_date);
+  if (spentDay < tripStart || spentDay > tripEnd) {
+    const err = new Error(
+      'A data do gasto deve estar dentro do período da viagem.'
+    );
+    err.status = 400;
+    throw err;
+  }
   const desc =
     body.description != null ? String(body.description).slice(0, 2000) : null;
 
@@ -43,7 +59,7 @@ export async function addExpense(userId, tripId, body) {
     tripId,
     category,
     amount: amount.toFixed(2),
-    spentAt,
+    spentAt: spentDay,
     description: desc,
   });
 }

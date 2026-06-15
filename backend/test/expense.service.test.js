@@ -101,6 +101,25 @@ test('addExpense exige data do gasto', async () => {
   );
 });
 
+test('addExpense rejeita data fora do período da viagem', async () => {
+  onPoolQuery((sql) => {
+    if (sql.includes('FROM trips')) {
+      return { rows: [tripRow] };
+    }
+    return { rows: [] };
+  });
+
+  await assert.rejects(
+    () =>
+      expenseService.addExpense(userId, tripId, {
+        category: 'food',
+        amount: 50,
+        spentAt: '2026-10-01',
+      }),
+    (err) => err.status === 400 && err.message.includes('período')
+  );
+});
+
 test('addExpense persiste gasto válido', async () => {
   onPoolQuery((sql) => {
     if (sql.includes('FROM trips')) {
