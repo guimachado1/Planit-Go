@@ -94,7 +94,12 @@ export function TripDetailPage() {
         </div>
 
         <div className="detail-expenses-grid">
-          <ExpenseForm onSubmit={addExpense} disabled={refreshing} />
+          <ExpenseForm
+            onSubmit={addExpense}
+            disabled={refreshing}
+            tripStartDate={trip.startDate}
+            tripEndDate={trip.endDate}
+          />
           <ExpenseList expenses={expenses} loading={refreshing} />
         </div>
 

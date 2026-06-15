@@ -3,7 +3,9 @@ import { Loader2, PlusCircle } from 'lucide-react';
 import { BUDGET_CATEGORIES } from '../../constants/budgetCategories.js';
 import { getApiErrorMessage } from '../../utils/errors.js';
 
-export function ExpenseForm({ onSubmit, disabled }) {
+export function ExpenseForm({ onSubmit, disabled, tripStartDate, tripEndDate }) {
+  const minDate = tripStartDate ? String(tripStartDate).slice(0, 10) : undefined;
+  const maxDate = tripEndDate ? String(tripEndDate).slice(0, 10) : undefined;
   const [category, setCategory] = useState('');
   const [amount, setAmount] = useState('');
   const [spentAt, setSpentAt] = useState('');
@@ -25,6 +27,11 @@ export function ExpenseForm({ onSubmit, disabled }) {
     const value = Number(amount);
     if (!Number.isFinite(value) || value <= 0) {
       setError('Informe um valor válido maior que zero.');
+      return;
+    }
+
+    if (minDate && maxDate && (spentAt < minDate || spentAt > maxDate)) {
+      setError('A data do gasto deve estar dentro do período da viagem.');
       return;
     }
 
@@ -94,6 +101,8 @@ export function ExpenseForm({ onSubmit, disabled }) {
                 type="date"
                 value={spentAt}
                 onChange={(e) => setSpentAt(e.target.value)}
+                min={minDate}
+                max={maxDate}
                 required
                 disabled={disabled || loading}
               />
