@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatCurrency, formatDateBR, formatDateRange } from './format.js';
+import { formatCurrency, formatDateBR, formatDateRange, toInputDate } from './format.js';
 
 describe('formatCurrency', () => {
   it('formata valor em BRL', () => {
@@ -30,5 +30,15 @@ describe('formatDateRange', () => {
     expect(formatDateRange('2026-09-01', '2026-09-05')).toBe(
       '01/09/2026 – 05/09/2026'
     );
+  });
+});
+
+describe('toInputDate', () => {
+  it('converte ISO para input date', () => {
+    expect(toInputDate('2026-09-15')).toBe('2026-09-15');
+  });
+
+  it('retorna vazio para valor ausente', () => {
+    expect(toInputDate(null)).toBe('');
   });
 });

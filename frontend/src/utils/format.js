@@ -7,6 +7,20 @@ export function formatCurrency(value) {
   }).format(n);
 }
 
+/** YYYY-MM-DD para input type="date" */
+export function toInputDate(value) {
+  if (value == null || value === '') return '';
+  const s = String(value).trim();
+  const iso = s.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (iso) return iso[1];
+  const parsed = new Date(s);
+  if (Number.isNaN(parsed.getTime())) return '';
+  const y = parsed.getFullYear();
+  const m = String(parsed.getMonth() + 1).padStart(2, '0');
+  const d = String(parsed.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 /** Exibição amigável; API usa YYYY-MM-DD */
 export function formatDateBR(isoDate) {
   if (!isoDate) return '';

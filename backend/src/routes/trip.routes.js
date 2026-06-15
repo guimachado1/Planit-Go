@@ -22,6 +22,8 @@ r.post('/:tripId/itinerary/items', itineraryController.createItem);
 r.patch('/:tripId/itinerary/items/:itemId', itineraryController.updateItem);
 r.delete('/:tripId/itinerary/items/:itemId', itineraryController.deleteItem);
 
+r.patch('/:id', tripController.update);
+r.delete('/:id', tripController.remove);
 r.get('/:id', tripController.getOne);
 
 export default r;

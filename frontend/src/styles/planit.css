@@ -1689,3 +1689,70 @@ a:hover {
     border: 1px solid currentColor;
   }
 }
+
+/* ——— Trip manage (edit / delete) ——— */
+.trip-manage {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.trip-manage summary {
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  user-select: none;
+  list-style: none;
+}
+
+.trip-manage summary::-webkit-details-marker {
+  display: none;
+}
+
+.trip-manage summary::before {
+  content: '▸ ';
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+.trip-manage[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.trip-manage summary:hover {
+  color: var(--foreground);
+}
+
+.trip-manage__body {
+  margin-top: 1rem;
+  max-width: 32rem;
+}
+
+.trip-manage__hint {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+
+.trip-manage__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.trip-manage__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.trip-manage__delete {
+  color: #b91c1c;
+}
+
+.trip-manage__delete:hover:not(:disabled) {
+  color: #991b1b;
+  background: rgba(185, 28, 28, 0.08);
+}

@@ -2,7 +2,7 @@ import { pool } from '../config/database.js';
 import { TRIP_PROFILES } from '../constants/tripProfiles.js';
 import { buildBudgetSummary } from '../domain/trip/budgetSummary.js';
 import { resolveTripStatus } from '../domain/trip/tripStatus.js';
-import { validateCreateTripPayload } from '../domain/trip/tripValidation.js';
+import { validateCreateTripPayload, validateUpdateTripPayload } from '../domain/trip/tripValidation.js';
 import { AppError } from '../errors/AppError.js';
 import * as tripRepo from '../repositories/trip.repository.js';
 
@@ -74,6 +74,59 @@ export async function getTripDetail(tripId, userId) {
   }
   const budgetLines = await tripRepo.getBudgetLines(tripId);
   return formatTrip(trip, budgetLines);
+}
+
+export async function updateTrip(tripId, userId, input) {
+  if (!userId) {
+    throw new AppError('Usuário não autenticado.', 401);
+  }
+
+  const existing = await tripRepo.getTripForUser(tripId, userId);
+  if (!existing) {
+    throw new AppError('Viagem não encontrada.', 404);
+  }
+
+  const { startDate, endDate } = validateUpdateTripPayload(input);
+
+  const conflict = await tripRepo.findTripDateConflict(
+    tripId,
+    startDate,
+    endDate
+  );
+  if (conflict === 'expense') {
+    throw new AppError(
+      'Não é possível alterar as datas: existem gastos fora do novo período. Ajuste ou remova esses lançamentos primeiro.',
+      400
+    );
+  }
+  if (conflict === 'itinerary') {
+    throw new AppError(
+      'Não é possível alterar as datas: existem atividades do itinerário fora do novo período.',
+      400
+    );
+  }
+
+  const updated = await tripRepo.updateTripMetadata(tripId, userId, {
+    destination: existing.destination,
+    startDate,
+    endDate,
+  });
+  if (!updated) {
+    throw new AppError('Viagem não encontrada.', 404);
+  }
+
+  return getTripDetail(tripId, userId);
+}
+
+export async function deleteTrip(tripId, userId) {
+  if (!userId) {
+    throw new AppError('Usuário não autenticado.', 401);
+  }
+
+  const deleted = await tripRepo.deleteTripForUser(tripId, userId);
+  if (!deleted) {
+    throw new AppError('Viagem não encontrada.', 404);
+  }
 }
 
 function formatTrip(row, budgetLines) {

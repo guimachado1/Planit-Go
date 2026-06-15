@@ -196,3 +196,15 @@ export function validateCreateTripPayload(input) {
     ...budgetPayload,
   };
 }
+
+/**
+ * Atualização das datas da viagem.
+ * @param {object} input
+ */
+export function validateUpdateTripPayload(input) {
+  const { startDate, endDate } = validateTripDates(
+    input.startDate,
+    input.endDate
+  );
+  return { startDate, endDate };
+}

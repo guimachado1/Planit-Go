@@ -5,6 +5,7 @@ import { ExpenseForm } from '../components/expenses/ExpenseForm.jsx';
 import { ExpenseList } from '../components/expenses/ExpenseList.jsx';
 import { FinancialSummary } from '../components/expenses/FinancialSummary.jsx';
 import { CategoryBudgetComparison } from '../components/expenses/CategoryBudgetComparison.jsx';
+import { TripManagePanel } from '../components/trips/TripManagePanel.jsx';
 import { useTripFinances } from '../hooks/useTripFinances.js';
 import { formatDateBR } from '../utils/format.js';
 import { getProfileLabel } from '../constants/tripProfiles.js';
@@ -22,6 +23,7 @@ export function TripDetailPage() {
     refreshing,
     error,
     addExpense,
+    reload,
   } = useTripFinances(id);
 
   if (loading) {
@@ -121,6 +123,14 @@ export function TripDetailPage() {
         <p className="page-subtitle" style={{ marginTop: '1.5rem', marginBottom: 0 }}>
           Viagem criada em {formatDateBR(String(trip.createdAt).slice(0, 10))}
         </p>
+
+        <TripManagePanel
+          key={String(trip.updatedAt ?? trip.id)}
+          trip={trip}
+          disabled={refreshing}
+          onUpdated={() => reload(true)}
+          onDeleted={() => navigate('/viagens')}
+        />
       </div>
     </AppShell>
   );

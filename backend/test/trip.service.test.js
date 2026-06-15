@@ -169,3 +169,74 @@ test('getTripDetail retorna viagem formatada', async () => {
   assert.equal(trip.budget.percentages.transport, 20);
   assert.equal(trip.budget.summary.totalBudget, '1000.00');
 });
+
+test('updateTrip atualiza datas da viagem', async () => {
+  onPoolQuery((sql) => {
+    if (sql.includes('FROM trips WHERE id') && sql.includes('user_id')) {
+      return {
+        rows: [{ ...tripRow, end_date: '2026-09-10' }],
+      };
+    }
+    if (sql.includes('UNION ALL')) {
+      return { rows: [] };
+    }
+    if (sql.includes('UPDATE trips')) {
+      return {
+        rows: [{ ...tripRow, end_date: '2026-09-10' }],
+      };
+    }
+    if (sql.includes('trip_budget_lines')) {
+      return { rows: budgetLines };
+    }
+    return { rows: [] };
+  });
+
+  const trip = await tripService.updateTrip(tripId, userId, {
+    startDate: '2026-09-01',
+    endDate: '2026-09-10',
+  });
+  assert.equal(trip.destination, 'Curitiba');
+  assert.equal(trip.endDate, '2026-09-10');
+});
+
+test('updateTrip bloqueia datas com gastos fora do período', async () => {
+  onPoolQuery((sql) => {
+    if (sql.includes('FROM trips WHERE')) {
+      return { rows: [tripRow] };
+    }
+    if (sql.includes('UNION ALL')) {
+      return { rows: [{ kind: 'expense' }] };
+    }
+    return { rows: [] };
+  });
+
+  await assert.rejects(
+    () =>
+      tripService.updateTrip(tripId, userId, {
+        startDate: '2026-10-01',
+        endDate: '2026-10-05',
+      }),
+    (err) =>
+      err instanceof AppError && err.status === 400 && err.message.includes('gastos')
+  );
+});
+
+test('deleteTrip remove viagem do usuário', async () => {
+  onPoolQuery((sql) => {
+    if (sql.includes('DELETE FROM trips')) {
+      return { rowCount: 1 };
+    }
+    return { rows: [] };
+  });
+
+  await assert.doesNotReject(() => tripService.deleteTrip(tripId, userId));
+});
+
+test('deleteTrip retorna 404 quando viagem não existe', async () => {
+  onPoolQuery(() => ({ rowCount: 0 }));
+
+  await assert.rejects(
+    () => tripService.deleteTrip(tripId, userId),
+    (err) => err instanceof AppError && err.status === 404
+  );
+});
