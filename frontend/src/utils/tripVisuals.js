@@ -1,4 +1,10 @@
 /** Capas decorativas por perfil (API não envia imagem) */
+import {
+  TRIP_STATUS,
+  TRIP_STATUS_LABELS,
+  TRIP_STATUS_VARIANTS,
+} from '../constants/tripStatus.js';
+
 const COVERS = {
   urban:
     'linear-gradient(135deg, #0369a1 0%, #0284c7 50%, #0ea5e9 100%)',
@@ -16,17 +22,69 @@ export function getTripCoverStyle(profile) {
   };
 }
 
-export function getTripStatus(startDate, endDate) {
-  const today = new Date();
-  today.setHours(12, 0, 0, 0);
-  const start = new Date(`${startDate}T12:00:00`);
-  const end = new Date(`${endDate}T12:00:00`);
-  if (today >= start && today <= end) {
-    return { key: 'ongoing', label: 'Em andamento', variant: 'success' };
+function toDateOnly(value) {
+  if (value == null || value === '') return null;
+  const s = String(value).trim();
+  const iso = s.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (iso) return iso[1];
+  const parsed = new Date(s);
+  if (Number.isNaN(parsed.getTime())) return null;
+  const y = parsed.getFullYear();
+  const m = String(parsed.getMonth() + 1).padStart(2, '0');
+  const d = String(parsed.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+/**
+ * Fase da viagem para exibição nos cards e detalhe.
+ * @returns {{ status: string, label: string, variant: string }}
+ */
+export function getTripStatus(startDate, endDate, referenceDate = new Date()) {
+  const start = toDateOnly(startDate);
+  const end = toDateOnly(endDate);
+  const today = toDateOnly(referenceDate);
+
+  if (!start || !end || !today) {
+    return {
+      status: TRIP_STATUS.PLANNED,
+      label: TRIP_STATUS_LABELS[TRIP_STATUS.PLANNED],
+      variant: TRIP_STATUS_VARIANTS[TRIP_STATUS.PLANNED],
+    };
   }
+
   if (today < start) {
-    const days = Math.ceil((start - today) / (1000 * 60 * 60 * 24));
-    return { key: 'upcoming', label: `${days} dias`, variant: 'primary' };
+    return {
+      status: TRIP_STATUS.PLANNED,
+      label: TRIP_STATUS_LABELS[TRIP_STATUS.PLANNED],
+      variant: TRIP_STATUS_VARIANTS[TRIP_STATUS.PLANNED],
+    };
   }
-  return { key: 'past', label: 'Concluída', variant: 'muted' };
+
+  if (today > end) {
+    return {
+      status: TRIP_STATUS.COMPLETED,
+      label: TRIP_STATUS_LABELS[TRIP_STATUS.COMPLETED],
+      variant: TRIP_STATUS_VARIANTS[TRIP_STATUS.COMPLETED],
+    };
+  }
+
+  return {
+    status: TRIP_STATUS.IN_PROGRESS,
+    label: TRIP_STATUS_LABELS[TRIP_STATUS.IN_PROGRESS],
+    variant: TRIP_STATUS_VARIANTS[TRIP_STATUS.IN_PROGRESS],
+  };
+}
+
+/**
+ * Usa status da API quando disponível; senão calcula no cliente.
+ */
+export function resolveTripDisplayStatus(trip) {
+  if (trip?.status && trip?.statusLabel) {
+    return {
+      status: trip.status,
+      label: trip.statusLabel,
+      variant: TRIP_STATUS_VARIANTS[trip.status] ?? 'muted',
+    };
+  }
+  return getTripStatus(trip.startDate, trip.endDate);
 }

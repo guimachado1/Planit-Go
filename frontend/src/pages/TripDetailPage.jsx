@@ -1,14 +1,16 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, MapPin, Calendar, Loader2, Route } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Loader2, Route, FileText } from 'lucide-react';
 import { AppShell } from '../components/layout/AppShell.jsx';
 import { ExpenseForm } from '../components/expenses/ExpenseForm.jsx';
 import { ExpenseList } from '../components/expenses/ExpenseList.jsx';
 import { FinancialSummary } from '../components/expenses/FinancialSummary.jsx';
 import { CategoryBudgetComparison } from '../components/expenses/CategoryBudgetComparison.jsx';
+import { TripManagePanel } from '../components/trips/TripManagePanel.jsx';
 import { useTripFinances } from '../hooks/useTripFinances.js';
 import { formatDateBR } from '../utils/format.js';
 import { getProfileLabel } from '../constants/tripProfiles.js';
-import { getTripCoverStyle } from '../utils/tripVisuals.js';
+import { getTripCoverStyle, resolveTripDisplayStatus } from '../utils/tripVisuals.js';
+import { TRIP_STATUS } from '../constants/tripStatus.js';
 
 export function TripDetailPage() {
   const { id } = useParams();
@@ -21,6 +23,7 @@ export function TripDetailPage() {
     refreshing,
     error,
     addExpense,
+    reload,
   } = useTripFinances(id);
 
   if (loading) {
@@ -47,6 +50,10 @@ export function TripDetailPage() {
     );
   }
 
+  const coverStyle = getTripCoverStyle(trip.profile);
+  const tripStatus = resolveTripDisplayStatus(trip);
+  const isFinal = tripStatus.status === TRIP_STATUS.COMPLETED;
+
   return (
     <AppShell>
       <div className="container container--wide">
@@ -56,6 +63,13 @@ export function TripDetailPage() {
             Voltar
           </button>
           <div className="page-header-row__actions">
+            <Link
+              to={`/viagens/${id}/relatorio`}
+              className={`btn btn--sm ${isFinal ? 'btn--primary' : 'btn--outline'}`}
+            >
+              <FileText size={16} />
+              {isFinal ? 'Relatório final' : 'Relatório'}
+            </Link>
             <Link to={`/viagens/${id}/itinerario`} className="btn btn--outline btn--sm">
               <Route size={16} />
               Itinerário
@@ -72,8 +86,11 @@ export function TripDetailPage() {
           </div>
         </div>
 
-        <div className="detail-hero" style={getTripCoverStyle(trip.profile)}>
+        <div className="detail-hero" style={coverStyle}>
           <div className="detail-hero__content">
+            <span className={`badge badge--${tripStatus.variant} detail-hero__status`}>
+              {tripStatus.label}
+            </span>
             <h2>{trip.destination}</h2>
             <div className="detail-hero__chips">
               <span className="detail-chip">
@@ -106,6 +123,14 @@ export function TripDetailPage() {
         <p className="page-subtitle" style={{ marginTop: '1.5rem', marginBottom: 0 }}>
           Viagem criada em {formatDateBR(String(trip.createdAt).slice(0, 10))}
         </p>
+
+        <TripManagePanel
+          key={String(trip.updatedAt ?? trip.id)}
+          trip={trip}
+          disabled={refreshing}
+          onUpdated={() => reload(true)}
+          onDeleted={() => navigate('/viagens')}
+        />
       </div>
     </AppShell>
   );

@@ -8,6 +8,7 @@ import {
   validateDestination,
   validateProfile,
   validateTotalBudget,
+  validateUpdateTripPayload,
 } from '../src/domain/trip/tripValidation.js';
 
 test('perfil inválido é rejeitado', () => {
@@ -199,4 +200,13 @@ test('data final antes da inicial é rejeitada', () => {
       }),
     (err) => err instanceof AppError
   );
+});
+
+test('validateUpdateTripPayload aceita datas válidas', () => {
+  const result = validateUpdateTripPayload({
+    startDate: '2026-08-01',
+    endDate: '2026-08-10',
+  });
+  assert.equal(result.startDate, '2026-08-01');
+  assert.equal(result.endDate, '2026-08-10');
 });

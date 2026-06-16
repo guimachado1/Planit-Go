@@ -34,3 +34,14 @@ export async function getTrip(id) {
   const { data } = await client.get(`/api/trips/${id}`);
   return data.trip;
 }
+
+/** PATCH /api/trips/:id */
+export async function updateTrip(id, payload) {
+  const { data } = await client.patch(`/api/trips/${id}`, payload);
+  return data.trip;
+}
+
+/** DELETE /api/trips/:id */
+export async function deleteTrip(id) {
+  await client.delete(`/api/trips/${id}`);
+}

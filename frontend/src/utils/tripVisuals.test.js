@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { getTripCoverStyle, getTripStatus } from './tripVisuals.js';
+import { getTripCoverStyle, getTripStatus, resolveTripDisplayStatus } from './tripVisuals.js';
 
 describe('getTripCoverStyle', () => {
   it('retorna gradiente do perfil', () => {
@@ -25,19 +25,50 @@ describe('getTripStatus', () => {
 
   it('identifica viagem em andamento', () => {
     const status = getTripStatus('2026-06-01', '2026-06-30');
-    expect(status.key).toBe('ongoing');
+    expect(status.status).toBe('in_progress');
     expect(status.label).toBe('Em andamento');
+    expect(status.variant).toBe('success');
   });
 
-  it('identifica viagem futura com dias restantes', () => {
+  it('identifica viagem planejada', () => {
     const status = getTripStatus('2026-07-01', '2026-07-10');
-    expect(status.key).toBe('upcoming');
-    expect(status.label).toMatch(/dias/);
+    expect(status.status).toBe('planned');
+    expect(status.label).toBe('Planejada');
+    expect(status.variant).toBe('primary');
   });
 
-  it('identifica viagem concluída', () => {
+  it('identifica viagem finalizada', () => {
     const status = getTripStatus('2026-01-01', '2026-01-10');
-    expect(status.key).toBe('past');
-    expect(status.label).toBe('Concluída');
+    expect(status.status).toBe('completed');
+    expect(status.label).toBe('Finalizada');
+    expect(status.variant).toBe('muted');
+  });
+
+  it('no último dia da viagem permanece em andamento', () => {
+    const status = getTripStatus('2026-06-10', '2026-06-15');
+    expect(status.status).toBe('in_progress');
+  });
+});
+
+describe('resolveTripDisplayStatus', () => {
+  it('usa status da API quando disponível', () => {
+    const status = resolveTripDisplayStatus({
+      status: 'planned',
+      statusLabel: 'Planejada',
+      startDate: '2026-09-01',
+      endDate: '2026-09-05',
+    });
+
+    expect(status.label).toBe('Planejada');
+    expect(status.status).toBe('planned');
+  });
+
+  it('calcula status quando API não envia', () => {
+    const status = resolveTripDisplayStatus({
+      startDate: '2026-06-01',
+      endDate: '2026-06-30',
+    });
+
+    expect(status.status).toBe('in_progress');
   });
 });
