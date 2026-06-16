@@ -199,6 +199,31 @@ test('updateTrip atualiza datas da viagem', async () => {
   assert.equal(trip.endDate, '2026-09-10');
 });
 
+test('updateTrip ignora destination enviado no body', async () => {
+  onPoolQuery((sql) => {
+    if (sql.includes('FROM trips WHERE id') && sql.includes('user_id')) {
+      return { rows: [tripRow] };
+    }
+    if (sql.includes('UNION ALL')) {
+      return { rows: [] };
+    }
+    if (sql.includes('UPDATE trips')) {
+      return { rows: [tripRow] };
+    }
+    if (sql.includes('trip_budget_lines')) {
+      return { rows: budgetLines };
+    }
+    return { rows: [] };
+  });
+
+  const trip = await tripService.updateTrip(tripId, userId, {
+    destination: 'Paris',
+    startDate: '2026-09-01',
+    endDate: '2026-09-05',
+  });
+  assert.equal(trip.destination, 'Curitiba');
+});
+
 test('updateTrip bloqueia datas com gastos fora do período', async () => {
   onPoolQuery((sql) => {
     if (sql.includes('FROM trips WHERE')) {

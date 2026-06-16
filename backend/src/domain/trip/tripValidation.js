@@ -198,7 +198,7 @@ export function validateCreateTripPayload(input) {
 }
 
 /**
- * Atualização das datas da viagem.
+ * Atualização das datas da viagem (destino ignorado de propósito).
  * @param {object} input
  */
 export function validateUpdateTripPayload(input) {
