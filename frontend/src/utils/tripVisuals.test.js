@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { getTripCoverStyle, getTripStatus } from './tripVisuals.js';
+import { getTripCoverStyle, getTripStatus, resolveTripDisplayStatus } from './tripVisuals.js';
 
 describe('getTripCoverStyle', () => {
   it('retorna gradiente do perfil', () => {
@@ -46,6 +46,29 @@ describe('getTripStatus', () => {
 
   it('no último dia da viagem permanece em andamento', () => {
     const status = getTripStatus('2026-06-10', '2026-06-15');
+    expect(status.status).toBe('in_progress');
+  });
+});
+
+describe('resolveTripDisplayStatus', () => {
+  it('usa status da API quando disponível', () => {
+    const status = resolveTripDisplayStatus({
+      status: 'planned',
+      statusLabel: 'Planejada',
+      startDate: '2026-09-01',
+      endDate: '2026-09-05',
+    });
+
+    expect(status.label).toBe('Planejada');
+    expect(status.status).toBe('planned');
+  });
+
+  it('calcula status quando API não envia', () => {
+    const status = resolveTripDisplayStatus({
+      startDate: '2026-06-01',
+      endDate: '2026-06-30',
+    });
+
     expect(status.status).toBe('in_progress');
   });
 });

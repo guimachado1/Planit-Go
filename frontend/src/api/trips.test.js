@@ -2,9 +2,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const post = vi.fn();
 const get = vi.fn();
+const patch = vi.fn();
+const del = vi.fn();
 
 vi.mock('./client.js', () => ({
-  default: { post, get },
+  default: { post, get, patch, delete: del },
 }));
 
 const {
@@ -13,6 +15,8 @@ const {
   createTrip,
   listTrips,
   getTrip,
+  updateTrip,
+  deleteTrip,
 } = await import('./trips.js');
 
 describe('trips api', () => {
@@ -57,5 +61,20 @@ describe('trips api', () => {
     get.mockResolvedValue({ data: { trip: { id: 'trip-2' } } });
     const trip = await getTrip('trip-2');
     expect(trip.id).toBe('trip-2');
+  });
+
+  it('updateTrip envia patch', async () => {
+    patch.mockResolvedValue({ data: { trip: { id: 'trip-3' } } });
+    const trip = await updateTrip('trip-3', { startDate: '2026-10-01' });
+    expect(patch).toHaveBeenCalledWith('/api/trips/trip-3', {
+      startDate: '2026-10-01',
+    });
+    expect(trip.id).toBe('trip-3');
+  });
+
+  it('deleteTrip remove viagem', async () => {
+    del.mockResolvedValue({});
+    await deleteTrip('trip-4');
+    expect(del).toHaveBeenCalledWith('/api/trips/trip-4');
   });
 });

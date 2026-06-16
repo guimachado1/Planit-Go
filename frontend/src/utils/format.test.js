@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatCurrency, formatDateBR, formatDateRange, toInputDate } from './format.js';
+import { formatCurrency, formatDateBR, formatDateRange, formatTime, toInputDate } from './format.js';
 
 describe('formatCurrency', () => {
   it('formata valor em BRL', () => {
@@ -40,5 +40,12 @@ describe('toInputDate', () => {
 
   it('retorna vazio para valor ausente', () => {
     expect(toInputDate(null)).toBe('');
+  });
+});
+
+describe('formatTime', () => {
+  it('formata horário HH:MM', () => {
+    expect(formatTime('10:30:00')).toBe('10:30');
+    expect(formatTime('')).toBe('');
   });
 });
