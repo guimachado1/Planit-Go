@@ -329,6 +329,86 @@ test('GET /api/trips/:tripId/expenses lista gastos', async () => {
   assert.equal(res.body.expenses.length, 1);
 });
 
+test('PATCH /api/trips/:tripId/expenses/:expenseId atualiza gasto', async () => {
+  onPoolQuery((sql) => {
+    if (sql.includes('FROM trips')) {
+      return { rows: [tripRow] };
+    }
+    if (sql.includes('FROM expenses WHERE id')) {
+      return {
+        rows: [
+          {
+            id: 'exp-1',
+            trip_id: tripId,
+            category: 'food',
+            amount: '30.00',
+            spent_at: '2026-09-02',
+            description: null,
+            created_at: new Date(),
+          },
+        ],
+      };
+    }
+    if (sql.includes('UPDATE expenses')) {
+      return {
+        rows: [
+          {
+            id: 'exp-1',
+            trip_id: tripId,
+            category: 'food',
+            amount: '35.00',
+            spent_at: '2026-09-02',
+            description: 'Jantar',
+            created_at: new Date(),
+          },
+        ],
+      };
+    }
+    return { rows: [] };
+  });
+
+  const res = await request(app)
+    .patch(`/api/trips/${tripId}/expenses/exp-1`)
+    .set(authHeader())
+    .send({ category: 'food', amount: 35, spentAt: '2026-09-02', description: 'Jantar' });
+
+  assert.equal(res.status, 200);
+  assert.equal(res.body.expense.amount, '35.00');
+});
+
+test('DELETE /api/trips/:tripId/expenses/:expenseId remove gasto', async () => {
+  onPoolQuery((sql) => {
+    if (sql.includes('FROM trips')) {
+      return { rows: [tripRow] };
+    }
+    if (sql.includes('FROM expenses WHERE id')) {
+      return {
+        rows: [
+          {
+            id: 'exp-1',
+            trip_id: tripId,
+            category: 'food',
+            amount: '30.00',
+            spent_at: '2026-09-02',
+            description: null,
+            created_at: new Date(),
+          },
+        ],
+      };
+    }
+    if (sql.includes('DELETE FROM expenses')) {
+      return { rowCount: 1 };
+    }
+    return { rows: [] };
+  });
+
+  const res = await request(app)
+    .delete(`/api/trips/${tripId}/expenses/exp-1`)
+    .set(authHeader());
+
+  assert.equal(res.status, 204);
+});
+
 test('rotas protegidas propagam erro de validação', async () => {
   const res = await request(app)
     .post('/api/trips/budget/suggest')

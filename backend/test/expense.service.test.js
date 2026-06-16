@@ -241,3 +241,92 @@ test('getFinancialSummary retorna 404 quando viagem não existe', async () => {
     (err) => err.status === 404
   );
 });
+
+const expenseRow = {
+  id: 'exp-1',
+  trip_id: tripId,
+  category: 'food',
+  amount: '50.00',
+  spent_at: '2026-09-02',
+  description: 'Almoço',
+  created_at: new Date(),
+};
+
+test('updateExpense atualiza gasto válido', async () => {
+  onPoolQuery((sql) => {
+    if (sql.includes('FROM trips')) {
+      return { rows: [tripRow] };
+    }
+    if (sql.includes('FROM expenses WHERE id')) {
+      return { rows: [expenseRow] };
+    }
+    if (sql.includes('UPDATE expenses')) {
+      return {
+        rows: [{ ...expenseRow, amount: '60.00', description: 'Jantar' }],
+      };
+    }
+    return { rows: [] };
+  });
+
+  const expense = await expenseService.updateExpense(userId, tripId, 'exp-1', {
+    category: 'food',
+    amount: 60,
+    spentAt: '2026-09-02',
+    description: 'Jantar',
+  });
+
+  assert.equal(expense.amount, '60.00');
+  assert.equal(expense.description, 'Jantar');
+});
+
+test('updateExpense retorna 404 quando gasto não existe', async () => {
+  onPoolQuery((sql) => {
+    if (sql.includes('FROM trips')) {
+      return { rows: [tripRow] };
+    }
+    return { rows: [] };
+  });
+
+  await assert.rejects(
+    () =>
+      expenseService.updateExpense(userId, tripId, 'missing', {
+        category: 'food',
+        amount: 50,
+        spentAt: '2026-09-02',
+      }),
+    (err) => err.status === 404 && err.message.includes('Gasto')
+  );
+});
+
+test('deleteExpense remove gasto da viagem', async () => {
+  onPoolQuery((sql) => {
+    if (sql.includes('FROM trips')) {
+      return { rows: [tripRow] };
+    }
+    if (sql.includes('FROM expenses WHERE id')) {
+      return { rows: [expenseRow] };
+    }
+    if (sql.includes('DELETE FROM expenses')) {
+      return { rowCount: 1 };
+    }
+    return { rows: [] };
+  });
+
+  await assert.doesNotReject(() =>
+    expenseService.deleteExpense(userId, tripId, 'exp-1')
+  );
+});
+
+test('deleteExpense retorna 404 quando gasto não existe', async () => {
+  onPoolQuery((sql) => {
+    if (sql.includes('FROM trips')) {
+      return { rows: [tripRow] };
+    }
+    return { rows: [] };
+  });
+
+  await assert.rejects(
+    () => expenseService.deleteExpense(userId, tripId, 'missing'),
+    (err) => err.status === 404
+  );
+});

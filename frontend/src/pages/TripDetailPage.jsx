@@ -23,6 +23,8 @@ export function TripDetailPage() {
     refreshing,
     error,
     addExpense,
+    updateExpense,
+    deleteExpense,
     reload,
   } = useTripFinances(id);
 
@@ -117,7 +119,15 @@ export function TripDetailPage() {
             tripStartDate={trip.startDate}
             tripEndDate={trip.endDate}
           />
-          <ExpenseList expenses={expenses} loading={refreshing} />
+          <ExpenseList
+            expenses={expenses}
+            loading={refreshing}
+            disabled={refreshing}
+            tripStartDate={trip.startDate}
+            tripEndDate={trip.endDate}
+            onUpdate={updateExpense}
+            onDelete={deleteExpense}
+          />
         </div>
 
         <p className="page-subtitle" style={{ marginTop: '1.5rem', marginBottom: 0 }}>

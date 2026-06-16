@@ -29,6 +29,25 @@ export async function createExpense(tripId, payload) {
   return normalizeExpense(data.expense);
 }
 
+/** PATCH /api/trips/:tripId/expenses/:expenseId */
+export async function updateExpense(tripId, expenseId, payload) {
+  const { data } = await client.patch(
+    `/api/trips/${tripId}/expenses/${expenseId}`,
+    {
+      category: payload.category,
+      amount: payload.amount,
+      spentAt: payload.spentAt,
+      description: payload.description || undefined,
+    }
+  );
+  return normalizeExpense(data.expense);
+}
+
+/** DELETE /api/trips/:tripId/expenses/:expenseId */
+export async function deleteExpense(tripId, expenseId) {
+  await client.delete(`/api/trips/${tripId}/expenses/${expenseId}`);
+}
+
 /** GET /api/trips/:tripId/summary */
 export async function getFinancialSummary(tripId) {
   const { data } = await client.get(`/api/trips/${tripId}/summary`);
