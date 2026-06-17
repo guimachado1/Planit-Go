@@ -1,4 +1,4 @@
-Planit Go
+## Planit Go
 
 O Planit Go é um web app de planejamento de viagens, com foco em controle de orçamento, acompanhamento de gastos e organização simples de itinerário. A proposta é oferecer uma ferramenta prática e acessível para viajantes que desejam organizar suas viagens sem depender de soluções complexas ou de múltiplas plataformas.
 
