@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import pg from 'pg';
 import dotenv from 'dotenv';
+import { getPgClientConfig } from '../src/config/pgSsl.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
@@ -21,7 +22,7 @@ async function main() {
     .filter((f) => f.endsWith('.sql'))
     .sort();
 
-  const client = new Client({ connectionString: url });
+  const client = new Client(getPgClientConfig(url));
   await client.connect();
 
   try {

@@ -5,13 +5,22 @@ import authRoutes from './routes/auth.routes.js';
 import metaRoutes from './routes/meta.routes.js';
 import tripRoutes from './routes/trip.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { env } from './config/env.js';
 
 const app = express();
 
 app.use(helmet());
+
+const corsOrigin = env.corsOrigin;
+if (env.nodeEnv === 'production' && !corsOrigin) {
+  console.warn(
+    'CORS_ORIGIN não definido em produção — defina a URL do frontend (ex.: Amplify).'
+  );
+}
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || true,
+    origin: corsOrigin || true,
     credentials: true,
   })
 );

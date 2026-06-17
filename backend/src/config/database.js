@@ -1,10 +1,11 @@
 import pg from 'pg';
 import { env } from './env.js';
+import { getPgClientConfig } from './pgSsl.js';
 
 const { Pool } = pg;
 
 export const pool = new Pool({
-  connectionString: env.databaseUrl,
+  ...getPgClientConfig(env.databaseUrl),
   max: 10,
 });
 

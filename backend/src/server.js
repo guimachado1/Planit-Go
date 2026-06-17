@@ -17,7 +17,7 @@ async function start() {
     );
   }
 
-  app.listen(env.port, () => {
+  app.listen(env.port, '0.0.0.0', () => {
     console.log(`Planit Go API listening on port ${env.port}`);
   });
 }

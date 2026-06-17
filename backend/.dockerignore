@@ -1,0 +1,11 @@
+node_modules
+coverage
+.env
+.env.*
+*.log
+test
+test-support
+.c8rc.json
+.git
+.gitignore
+README.md
