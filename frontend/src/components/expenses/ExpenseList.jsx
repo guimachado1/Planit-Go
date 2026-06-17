@@ -1,12 +1,15 @@
 import { Receipt } from 'lucide-react';
-import { getCategoryLabel, BUDGET_CATEGORIES } from '../../constants/budgetCategories.js';
-import { formatCurrency, formatDateBR } from '../../utils/format.js';
+import { ExpenseRow } from './ExpenseRow.jsx';
 
-function categoryColor(key) {
-  return BUDGET_CATEGORIES.find((c) => c.key === key)?.color ?? '#64748b';
-}
-
-export function ExpenseList({ expenses, loading }) {
+export function ExpenseList({
+  expenses,
+  loading,
+  disabled,
+  tripStartDate,
+  tripEndDate,
+  onUpdate,
+  onDelete,
+}) {
   if (loading && expenses.length === 0) {
     return (
       <div className="card">
@@ -31,27 +34,20 @@ export function ExpenseList({ expenses, loading }) {
         {expenses.length === 0 ? (
           <div className="expense-empty">
             <Receipt size={40} strokeWidth={1.25} />
-            <p>Registre o primeiro gasto usando o formulário acima.</p>
+            <p>Registre o primeiro gasto usando o formulário ao lado.</p>
           </div>
         ) : (
           <ul className="expense-list">
             {expenses.map((exp) => (
-              <li key={exp.id} className="expense-list__item">
-                <div className="expense-list__icon" style={{ background: `${categoryColor(exp.category)}22`, color: categoryColor(exp.category) }}>
-                  <Receipt size={16} />
-                </div>
-                <div className="expense-list__main">
-                  <span className="expense-list__title">
-                    {exp.description || getCategoryLabel(exp.category)}
-                  </span>
-                  <span className="expense-list__meta">
-                    {getCategoryLabel(exp.category)} · {formatDateBR(exp.spentAt)}
-                  </span>
-                </div>
-                <strong className="expense-list__amount">
-                  {formatCurrency(exp.amount)}
-                </strong>
-              </li>
+              <ExpenseRow
+                key={exp.id}
+                expense={exp}
+                tripStartDate={tripStartDate}
+                tripEndDate={tripEndDate}
+                disabled={disabled || loading}
+                onUpdate={onUpdate}
+                onDelete={onDelete}
+              />
             ))}
           </ul>
         )}

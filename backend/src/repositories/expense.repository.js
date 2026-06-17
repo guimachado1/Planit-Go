@@ -20,6 +20,44 @@ export async function listExpensesByTrip(tripId) {
   return rows;
 }
 
+export async function getExpenseForTrip(expenseId, tripId) {
+  const { rows } = await pool.query(
+    `SELECT id, trip_id, category, amount, spent_at, description, created_at
+     FROM expenses WHERE id = $1 AND trip_id = $2`,
+    [expenseId, tripId]
+  );
+  return rows[0] ?? null;
+}
+
+export async function updateExpense(expenseId, tripId, data) {
+  const { rows } = await pool.query(
+    `UPDATE expenses
+     SET category = $3,
+         amount = $4::numeric,
+         spent_at = $5::date,
+         description = $6
+     WHERE id = $1 AND trip_id = $2
+     RETURNING id, trip_id, category, amount, spent_at, description, created_at`,
+    [
+      expenseId,
+      tripId,
+      data.category,
+      data.amount,
+      data.spentAt,
+      data.description ?? null,
+    ]
+  );
+  return rows[0] ?? null;
+}
+
+export async function deleteExpense(expenseId, tripId) {
+  const { rowCount } = await pool.query(
+    `DELETE FROM expenses WHERE id = $1 AND trip_id = $2`,
+    [expenseId, tripId]
+  );
+  return rowCount > 0;
+}
+
 export async function sumExpensesByCategory(tripId) {
   const { rows } = await pool.query(
     `SELECT category, COALESCE(SUM(amount), 0)::numeric AS total

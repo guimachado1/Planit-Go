@@ -45,6 +45,22 @@ export function useTripFinances(tripId) {
     [tripId, load]
   );
 
+  const updateExpense = useCallback(
+    async (expenseId, payload) => {
+      await expensesApi.updateExpense(tripId, expenseId, payload);
+      await load(true);
+    },
+    [tripId, load]
+  );
+
+  const deleteExpense = useCallback(
+    async (expenseId) => {
+      await expensesApi.deleteExpense(tripId, expenseId);
+      await load(true);
+    },
+    [tripId, load]
+  );
+
   return {
     trip,
     summary,
@@ -54,5 +70,7 @@ export function useTripFinances(tripId) {
     error,
     reload: load,
     addExpense,
+    updateExpense,
+    deleteExpense,
   };
 }

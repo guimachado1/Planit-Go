@@ -106,8 +106,7 @@ export async function updateTrip(tripId, userId, input) {
     );
   }
 
-  const updated = await tripRepo.updateTripMetadata(tripId, userId, {
-    destination: existing.destination,
+  const updated = await tripRepo.updateTripDates(tripId, userId, {
     startDate,
     endDate,
   });

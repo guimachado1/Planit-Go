@@ -25,3 +25,22 @@ export const summary = asyncHandler(async (req, res) => {
   );
   res.json({ summary });
 });
+
+export const update = asyncHandler(async (req, res) => {
+  const expense = await expenseService.updateExpense(
+    req.user.id,
+    req.params.tripId,
+    req.params.expenseId,
+    req.body
+  );
+  res.json({ expense });
+});
+
+export const remove = asyncHandler(async (req, res) => {
+  await expenseService.deleteExpense(
+    req.user.id,
+    req.params.tripId,
+    req.params.expenseId
+  );
+  res.status(204).send();
+});

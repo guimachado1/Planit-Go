@@ -23,6 +23,10 @@
   --shadow-sm: 0 2px 8px rgba(2, 132, 199, 0.06);
   --shadow-md: 0 8px 30px rgba(2, 132, 199, 0.12);
   --shadow-lg: 0 20px 50px rgba(2, 40, 60, 0.15);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
 }
 
 *,
@@ -57,6 +61,7 @@ a:hover {
 /* Fundo decorativo (Dashboard Figma) */
 .app-layout {
   min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
   overflow-x: hidden;
 }
@@ -86,7 +91,8 @@ a:hover {
   width: 100%;
   max-width: 960px;
   margin: 0 auto;
-  padding: 0 1.25rem;
+  padding-left: max(1.25rem, var(--safe-left));
+  padding-right: max(1.25rem, var(--safe-right));
 }
 
 .container--narrow {
@@ -100,11 +106,16 @@ a:hover {
 /* ——— Login / Register ——— */
 .login-page {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 1.5rem;
+  padding:
+    max(1.5rem, var(--safe-top))
+    max(1.5rem, var(--safe-right))
+    max(1.5rem, var(--safe-bottom))
+    max(1.5rem, var(--safe-left));
   background: var(--muted);
 }
 
@@ -197,7 +208,11 @@ a:hover {
 .app-header__inner {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0.85rem 1.25rem;
+  padding:
+    calc(0.85rem + var(--safe-top))
+    max(1.25rem, var(--safe-right))
+    0.85rem
+    max(1.25rem, var(--safe-left));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -284,7 +299,7 @@ a:hover {
 }
 
 .page-main {
-  padding: 2rem 0 4rem;
+  padding: 2rem 0 calc(4rem + var(--safe-bottom));
 }
 
 .page-title {
@@ -1094,6 +1109,30 @@ a:hover {
   font-size: 0.95rem;
   color: var(--primary);
   white-space: nowrap;
+}
+
+.expense-list__item--editing {
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.expense-list__edit-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.expense-list__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.expense-list__delete:hover:not(:disabled) {
+  color: #b91c1c;
 }
 
 .expense-empty {

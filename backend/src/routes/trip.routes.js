@@ -15,6 +15,8 @@ r.get('/', tripController.list);
 
 r.post('/:tripId/expenses', expenseController.create);
 r.get('/:tripId/expenses', expenseController.list);
+r.patch('/:tripId/expenses/:expenseId', expenseController.update);
+r.delete('/:tripId/expenses/:expenseId', expenseController.remove);
 r.get('/:tripId/summary', expenseController.summary);
 
 r.get('/:tripId/itinerary', itineraryController.getItinerary);

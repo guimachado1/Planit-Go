@@ -12,13 +12,25 @@ function parseMoney(v) {
   return Math.round(n * 100) / 100;
 }
 
-export async function addExpense(userId, tripId, body) {
+function notFoundTrip() {
+  const err = new Error('Viagem não encontrada.');
+  err.status = 404;
+  return err;
+}
+
+function notFoundExpense() {
+  const err = new Error('Gasto não encontrado.');
+  err.status = 404;
+  return err;
+}
+
+async function requireTrip(userId, tripId) {
   const trip = await tripRepo.getTripForUser(tripId, userId);
-  if (!trip) {
-    const err = new Error('Viagem não encontrada.');
-    err.status = 404;
-    throw err;
-  }
+  if (!trip) throw notFoundTrip();
+  return trip;
+}
+
+function validateExpenseFields(trip, body) {
   const category = body.category;
   if (!CAT_SET.has(category)) {
     const err = new Error('Categoria inválida.');
@@ -52,25 +64,43 @@ export async function addExpense(userId, tripId, body) {
     err.status = 400;
     throw err;
   }
-  const desc =
+  const description =
     body.description != null ? String(body.description).slice(0, 2000) : null;
 
-  return expenseRepo.insertExpense({
-    tripId,
+  return {
     category,
     amount: amount.toFixed(2),
     spentAt: spentDay,
-    description: desc,
-  });
+    description,
+  };
+}
+
+export async function addExpense(userId, tripId, body) {
+  const trip = await requireTrip(userId, tripId);
+  const validated = validateExpenseFields(trip, body);
+  return expenseRepo.insertExpense({ tripId, ...validated });
+}
+
+export async function updateExpense(userId, tripId, expenseId, body) {
+  const trip = await requireTrip(userId, tripId);
+  const existing = await expenseRepo.getExpenseForTrip(expenseId, tripId);
+  if (!existing) throw notFoundExpense();
+
+  const validated = validateExpenseFields(trip, body);
+  const updated = await expenseRepo.updateExpense(expenseId, tripId, validated);
+  if (!updated) throw notFoundExpense();
+  return updated;
+}
+
+export async function deleteExpense(userId, tripId, expenseId) {
+  await requireTrip(userId, tripId);
+  const existing = await expenseRepo.getExpenseForTrip(expenseId, tripId);
+  if (!existing) throw notFoundExpense();
+  await expenseRepo.deleteExpense(expenseId, tripId);
 }
 
 export async function listExpenses(userId, tripId) {
-  const trip = await tripRepo.getTripForUser(tripId, userId);
-  if (!trip) {
-    const err = new Error('Viagem não encontrada.');
-    err.status = 404;
-    throw err;
-  }
+  await requireTrip(userId, tripId);
   return expenseRepo.listExpensesByTrip(tripId);
 }
 
@@ -78,12 +108,7 @@ export async function listExpenses(userId, tripId) {
  * Resumo planejado vs real por categoria + totais (RF03, RF05 base).
  */
 export async function getFinancialSummary(userId, tripId) {
-  const trip = await tripRepo.getTripForUser(tripId, userId);
-  if (!trip) {
-    const err = new Error('Viagem não encontrada.');
-    err.status = 404;
-    throw err;
-  }
+  const trip = await requireTrip(userId, tripId);
   const budgetLines = await tripRepo.getBudgetLines(tripId);
   const spentRows = await expenseRepo.sumExpensesByCategory(tripId);
 

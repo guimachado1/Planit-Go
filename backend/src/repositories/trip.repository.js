@@ -54,16 +54,16 @@ export async function getBudgetLines(tripId) {
   return rows;
 }
 
-export async function updateTripMetadata(tripId, userId, data) {
+/** Atualiza apenas o período da viagem (destino não é editável via API). */
+export async function updateTripDates(tripId, userId, { startDate, endDate }) {
   const { rows } = await pool.query(
     `UPDATE trips
-     SET destination = $3,
-         start_date = $4::date,
-         end_date = $5::date,
+     SET start_date = $3::date,
+         end_date = $4::date,
          updated_at = NOW()
      WHERE id = $1 AND user_id = $2
      RETURNING id, user_id, destination, start_date, end_date, total_budget, profile, created_at, updated_at`,
-    [tripId, userId, data.destination, data.startDate, data.endDate]
+    [tripId, userId, startDate, endDate]
   );
   return rows[0] ?? null;
 }
