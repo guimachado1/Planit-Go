@@ -16,4 +16,6 @@ export const env = {
   databaseUrl: required('DATABASE_URL'),
   jwtSecret: required('JWT_SECRET'),
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  /** URL do frontend em produção (ex.: https://main.xxx.amplifyapp.com) */
+  corsOrigin: process.env.CORS_ORIGIN || '',
 };
