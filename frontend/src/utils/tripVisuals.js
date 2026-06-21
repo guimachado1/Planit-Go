@@ -19,13 +19,13 @@ const COVERS = {
 /** Imagens de capa nos cards da listagem (detalhe da viagem mantém gradiente) */
 const CARD_COVER_IMAGES = {
   urban:
-    'https://images.unsplash.com/photo-1480714378408-67cf980d5cd9?w=800&q=80',
+    'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80',
   beach:
     'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
   international:
-    'https://images.unsplash.com/photo-1436491865339-7a61a387ad84?w=800&q=80',
+    'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80',
   backpacker:
-    'https://images.unsplash.com/photo-1551632811-561732d54461?w=800&q=80',
+    'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=800&q=80',
 };
 
 /** Gradiente decorativo — usado no hero das páginas internas da viagem */
@@ -35,11 +35,15 @@ export function getTripCoverStyle(profile) {
   };
 }
 
-/** Foto por perfil — usado apenas nos cards da tela inicial */
+/** URL da foto por perfil — usado nos cards da tela inicial */
+export function getTripCardCoverUrl(profile) {
+  return CARD_COVER_IMAGES[profile] || CARD_COVER_IMAGES.urban;
+}
+
+/** Foto por perfil — usado nos cards da tela inicial */
 export function getTripCardCoverStyle(profile) {
-  const image = CARD_COVER_IMAGES[profile] || CARD_COVER_IMAGES.urban;
   return {
-    backgroundImage: `url(${image})`,
+    backgroundImage: `url("${getTripCardCoverUrl(profile)}")`,
   };
 }
 

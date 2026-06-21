@@ -1,16 +1,32 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Wallet } from 'lucide-react';
 import { formatCurrency, formatDateBR } from '../../utils/format.js';
 import { getProfileLabel } from '../../constants/tripProfiles.js';
-import { getTripCardCoverStyle, resolveTripDisplayStatus } from '../../utils/tripVisuals.js';
+import {
+  getTripCardCoverUrl,
+  getTripCoverStyle,
+  resolveTripDisplayStatus,
+} from '../../utils/tripVisuals.js';
 
 export function TripCard({ trip }) {
   const status = resolveTripDisplayStatus(trip);
-  const coverStyle = getTripCardCoverStyle(trip.profile);
+  const [coverFailed, setCoverFailed] = useState(false);
+  const coverStyle = coverFailed ? getTripCoverStyle(trip.profile) : undefined;
 
   return (
     <Link to={`/viagens/${trip.id}`} className="trip-card">
       <div className="trip-card__cover" style={coverStyle}>
+        {!coverFailed && (
+          <img
+            className="trip-card__cover-img"
+            src={getTripCardCoverUrl(trip.profile)}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            onError={() => setCoverFailed(true)}
+          />
+        )}
         <span className={`badge badge--${status.variant}`}>{status.label}</span>
       </div>
       <div className="trip-card__body">
