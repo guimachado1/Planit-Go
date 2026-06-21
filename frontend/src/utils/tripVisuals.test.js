@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   getTripCardCoverStyle,
+  getTripCardCoverUrl,
   getTripCoverStyle,
   getTripStatus,
   resolveTripDisplayStatus,
@@ -18,16 +19,21 @@ describe('getTripCoverStyle', () => {
   });
 });
 
-describe('getTripCardCoverStyle', () => {
-  it('retorna imagem do perfil', () => {
-    const style = getTripCardCoverStyle('beach');
-    expect(style.backgroundImage).toContain('unsplash.com');
-    expect(style.backgroundImage).toContain('photo-1507525428034');
+describe('getTripCardCoverUrl', () => {
+  it('retorna URL da imagem do perfil', () => {
+    expect(getTripCardCoverUrl('beach')).toContain('photo-1507525428034');
   });
 
   it('usa urban como fallback', () => {
-    const style = getTripCardCoverStyle('desconhecido');
-    expect(style.backgroundImage).toContain('photo-1480714378408');
+    expect(getTripCardCoverUrl('desconhecido')).toContain('photo-1512453979798');
+  });
+});
+
+describe('getTripCardCoverStyle', () => {
+  it('retorna backgroundImage com a URL do perfil', () => {
+    const style = getTripCardCoverStyle('beach');
+    expect(style.backgroundImage).toContain('unsplash.com');
+    expect(style.backgroundImage).toContain('photo-1507525428034');
   });
 });
 
