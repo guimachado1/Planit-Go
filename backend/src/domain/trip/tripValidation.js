@@ -4,6 +4,7 @@ import {
   isValidProfileKey,
 } from '../../constants/tripProfiles.js';
 import { AppError } from '../../errors/AppError.js';
+import { normalizeDateOnly } from '../dateOnly.js';
 import { calculateAutomaticDistribution } from '../budget/distribution.js';
 import { buildBudgetSummary } from './budgetSummary.js';
 
@@ -50,7 +51,7 @@ export function validateDateField(value, fieldName) {
   return raw;
 }
 
-export function validateTripDates(startDate, endDate) {
+export function validateTripDates(startDate, endDate, options = {}) {
   const start = validateDateField(startDate, 'startDate');
   const end = validateDateField(endDate, 'endDate');
   const s = new Date(`${start}T12:00:00Z`);
@@ -61,6 +62,17 @@ export function validateTripDates(startDate, endDate) {
       400
     );
   }
+
+  const minStart = options.minStartDate
+    ? normalizeDateOnly(options.minStartDate)
+    : null;
+  if (minStart && start < minStart) {
+    throw new AppError(
+      'A data de início não pode ser anterior a hoje.',
+      400
+    );
+  }
+
   return { startDate: start, endDate: end };
 }
 
@@ -185,7 +197,8 @@ export function validateCreateTripPayload(input) {
   const destination = validateDestination(input.destination);
   const { startDate, endDate } = validateTripDates(
     input.startDate,
-    input.endDate
+    input.endDate,
+    { minStartDate: normalizeDateOnly(new Date()) }
   );
   const budgetPayload = validateTripBudgetPayload(input);
 

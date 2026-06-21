@@ -226,6 +226,36 @@ test('GET /api/trips/:id retorna detalhe', async () => {
   assert.equal(res.body.trip.id, tripId);
 });
 
+test('PATCH /api/trips/:id atualiza datas da viagem', async () => {
+  onPoolQuery((sql) => {
+    if (sql.includes('FROM trips WHERE id') && sql.includes('user_id')) {
+      return {
+        rows: [{ ...tripRow, end_date: '2026-09-10' }],
+      };
+    }
+    if (sql.includes('spent_at <') && sql.includes('itinerary_items')) {
+      return { rows: [{ kind: null }] };
+    }
+    if (sql.includes('UPDATE trips')) {
+      return {
+        rows: [{ ...tripRow, end_date: '2026-09-10' }],
+      };
+    }
+    if (sql.includes('trip_budget_lines')) {
+      return { rows: budgetLines };
+    }
+    return { rows: [] };
+  });
+
+  const res = await request(app)
+    .patch(`/api/trips/${tripId}`)
+    .set(authHeader())
+    .send({ startDate: '2026-09-01', endDate: '2026-09-10' });
+
+  assert.equal(res.status, 200);
+  assert.equal(res.body.trip.endDate, '2026-09-10');
+});
+
 test('POST /api/trips/:tripId/expenses registra gasto', async () => {
   onPoolQuery((sql) => {
     if (sql.includes('FROM trips')) {

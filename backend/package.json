@@ -4,20 +4,21 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node --experimental-loader newrelic/esm-loader.mjs -r newrelic src/server.js",
     "migrate": "node scripts/migrate.js",
-    "test": "node --test test",
-    "test:coverage": "c8 node --test test"
+    "test": "node --test",
+    "test:coverage": "c8 node --test"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "newrelic": "^14.1.0",

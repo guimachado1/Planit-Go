@@ -2,11 +2,11 @@ import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Wallet } from 'lucide-react';
 import { formatCurrency, formatDateBR } from '../../utils/format.js';
 import { getProfileLabel } from '../../constants/tripProfiles.js';
-import { getTripCoverStyle, resolveTripDisplayStatus } from '../../utils/tripVisuals.js';
+import { getTripCardCoverStyle, resolveTripDisplayStatus } from '../../utils/tripVisuals.js';
 
 export function TripCard({ trip }) {
   const status = resolveTripDisplayStatus(trip);
-  const coverStyle = getTripCoverStyle(trip.profile);
+  const coverStyle = getTripCardCoverStyle(trip.profile);
 
   return (
     <Link to={`/viagens/${trip.id}`} className="trip-card">

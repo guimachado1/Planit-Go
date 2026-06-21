@@ -21,6 +21,21 @@ export function toInputDate(value) {
   return `${y}-${m}-${d}`;
 }
 
+/** YYYY-MM-DD do dia atual (fuso local) — para inputs type="date" */
+export function getTodayInputDate() {
+  return toInputDate(new Date());
+}
+
+/**
+ * Data mínima de início ao editar viagem: hoje, ou a data original se a viagem já começou.
+ */
+export function getMinTripStartDate(existingStartDate) {
+  const today = getTodayInputDate();
+  const existing = toInputDate(existingStartDate);
+  if (existing && existing < today) return existing;
+  return today;
+}
+
 /** Exibição amigável; API usa YYYY-MM-DD */
 export function formatDateBR(isoDate) {
   if (!isoDate) return '';
