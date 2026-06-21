@@ -1,10 +1,10 @@
 # Planit Go API — imagem de produção (App Runner, ECS, Beanstalk, etc.)
-FROM node:20-slim AS deps
+FROM node:22-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-FROM node:20-slim
+FROM node:22-slim
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -15,6 +15,7 @@ COPY package.json package-lock.json ./
 COPY src ./src
 COPY scripts ./scripts
 COPY migrations ./migrations
+COPY newrelic.cjs ./newrelic.cjs
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
 RUN sed -i 's/\r$//' ./docker-entrypoint.sh && chmod +x ./docker-entrypoint.sh
 

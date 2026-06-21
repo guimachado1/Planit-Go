@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "node --watch src/server.js",
-    "start": "node src/server.js",
+    "start": "node --import newrelic/esm-loader.mjs src/server.js",
     "migrate": "node scripts/migrate.js",
     "test": "node --test test",
     "test:coverage": "c8 node --test test"
@@ -20,6 +20,7 @@
     "express": "^4.21.2",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
+    "newrelic": "^14.1.0",
     "pg": "^8.13.1"
   },
   "devDependencies": {
