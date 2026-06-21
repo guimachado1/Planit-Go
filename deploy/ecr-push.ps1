@@ -36,4 +36,4 @@ docker push $ImageUri
 
 Write-Host ""
 Write-Host "Imagem publicada: $ImageUri"
-Write-Host "Use essa URI ao criar o serviço no App Runner."
+Write-Host "Use essa URI na task definition do ECS (container image)."
