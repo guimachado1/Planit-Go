@@ -57,4 +57,28 @@ describe('LoginPage', () => {
     expect(login).toHaveBeenCalledWith('teste@example.com', 'senha12345');
     expect(navigate).toHaveBeenCalledWith('/viagens');
   });
+
+  it('alterna visibilidade da senha', async () => {
+    useAuth.mockReturnValue({
+      login,
+      isAuthenticated: false,
+      bootstrapping: false,
+    });
+
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    );
+
+    const passwordInput = screen.getByLabelText('Senha');
+    expect(passwordInput).toHaveAttribute('type', 'password');
+
+    await user.click(screen.getByRole('button', { name: 'Mostrar senha' }));
+    expect(passwordInput).toHaveAttribute('type', 'text');
+
+    await user.click(screen.getByRole('button', { name: 'Ocultar senha' }));
+    expect(passwordInput).toHaveAttribute('type', 'password');
+  });
 });

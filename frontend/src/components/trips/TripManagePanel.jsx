@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Loader2, Trash2 } from 'lucide-react';
 import * as tripsApi from '../../api/trips.js';
 import { getApiErrorMessage } from '../../utils/errors.js';
-import { toInputDate } from '../../utils/format.js';
+import { getMinTripStartDate, toInputDate } from '../../utils/format.js';
 
 export function TripManagePanel({ trip, disabled, onUpdated, onDeleted }) {
+  const minStartDate = getMinTripStartDate(trip.startDate);
   const [startDate, setStartDate] = useState(toInputDate(trip.startDate));
   const [endDate, setEndDate] = useState(toInputDate(trip.endDate));
   const [saving, setSaving] = useState(false);
@@ -23,6 +24,10 @@ export function TripManagePanel({ trip, disabled, onUpdated, onDeleted }) {
     }
     if (startDate > endDate) {
       setError('A data final deve ser maior ou igual à inicial.');
+      return;
+    }
+    if (startDate < minStartDate) {
+      setError('A data de início não pode ser anterior a hoje.');
       return;
     }
 
@@ -75,6 +80,7 @@ export function TripManagePanel({ trip, disabled, onUpdated, onDeleted }) {
                 id="trip-edit-start"
                 type="date"
                 value={startDate}
+                min={minStartDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 disabled={busy}
                 required
@@ -86,7 +92,7 @@ export function TripManagePanel({ trip, disabled, onUpdated, onDeleted }) {
                 id="trip-edit-end"
                 type="date"
                 value={endDate}
-                min={startDate || undefined}
+                min={startDate || minStartDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 disabled={busy}
                 required

@@ -177,8 +177,8 @@ test('updateTrip atualiza datas da viagem', async () => {
         rows: [{ ...tripRow, end_date: '2026-09-10' }],
       };
     }
-    if (sql.includes('UNION ALL')) {
-      return { rows: [] };
+    if (sql.includes('spent_at <') && sql.includes('itinerary_items')) {
+      return { rows: [{ kind: null }] };
     }
     if (sql.includes('UPDATE trips')) {
       return {
@@ -204,8 +204,8 @@ test('updateTrip ignora destination enviado no body', async () => {
     if (sql.includes('FROM trips WHERE id') && sql.includes('user_id')) {
       return { rows: [tripRow] };
     }
-    if (sql.includes('UNION ALL')) {
-      return { rows: [] };
+    if (sql.includes('spent_at <') && sql.includes('itinerary_items')) {
+      return { rows: [{ kind: null }] };
     }
     if (sql.includes('UPDATE trips')) {
       return { rows: [tripRow] };
@@ -229,7 +229,7 @@ test('updateTrip bloqueia datas com gastos fora do período', async () => {
     if (sql.includes('FROM trips WHERE')) {
       return { rows: [tripRow] };
     }
-    if (sql.includes('UNION ALL')) {
+    if (sql.includes('spent_at <') && sql.includes('itinerary_items')) {
       return { rows: [{ kind: 'expense' }] };
     }
     return { rows: [] };

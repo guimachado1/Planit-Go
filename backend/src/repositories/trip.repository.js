@@ -79,15 +79,16 @@ export async function deleteTripForUser(tripId, userId) {
 /** Gasto ou item de itinerário fora do novo intervalo impede o ajuste de datas. */
 export async function findTripDateConflict(tripId, startDate, endDate) {
   const { rows } = await pool.query(
-    `SELECT 'expense' AS kind
-     FROM expenses
-     WHERE trip_id = $1 AND (spent_at < $2::date OR spent_at > $3::date)
-     LIMIT 1
-     UNION ALL
-     SELECT 'itinerary'
-     FROM itinerary_items
-     WHERE trip_id = $1 AND (day_date < $2::date OR day_date > $3::date)
-     LIMIT 1`,
+    `SELECT CASE
+       WHEN EXISTS (
+         SELECT 1 FROM expenses
+         WHERE trip_id = $1 AND (spent_at < $2::date OR spent_at > $3::date)
+       ) THEN 'expense'
+       WHEN EXISTS (
+         SELECT 1 FROM itinerary_items
+         WHERE trip_id = $1 AND (day_date < $2::date OR day_date > $3::date)
+       ) THEN 'itinerary'
+     END AS kind`,
     [tripId, startDate, endDate]
   );
   return rows[0]?.kind ?? null;

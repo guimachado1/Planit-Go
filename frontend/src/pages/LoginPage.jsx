@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { Plane, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Plane } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { getApiErrorMessage } from '../utils/errors.js';
 
@@ -9,6 +9,7 @@ export function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -57,17 +58,28 @@ export function LoginPage() {
               required
             />
           </div>
-          <div className="field">
+          <div className="field field--password-toggle">
             <label htmlFor="password">Senha</label>
-            <input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={8}
-            />
+            <div className="field__icon-wrap">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={8}
+              />
+              <button
+                type="button"
+                className="field__toggle"
+                onClick={() => setShowPassword((visible) => !visible)}
+                aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                aria-pressed={showPassword}
+              >
+                {showPassword ? <EyeOff size={18} aria-hidden /> : <Eye size={18} aria-hidden />}
+              </button>
+            </div>
           </div>
           {error ? <div className="alert alert--error">{error}</div> : null}
           <button

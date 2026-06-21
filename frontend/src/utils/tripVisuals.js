@@ -16,9 +16,30 @@ const COVERS = {
     'linear-gradient(135deg, #15803d 0%, #0d9488 50%, #0284c7 100%)',
 };
 
+/** Imagens de capa nos cards da listagem (detalhe da viagem mantém gradiente) */
+const CARD_COVER_IMAGES = {
+  urban:
+    'https://images.unsplash.com/photo-1480714378408-67cf980d5cd9?w=800&q=80',
+  beach:
+    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+  international:
+    'https://images.unsplash.com/photo-1436491865339-7a61a387ad84?w=800&q=80',
+  backpacker:
+    'https://images.unsplash.com/photo-1551632811-561732d54461?w=800&q=80',
+};
+
+/** Gradiente decorativo — usado no hero das páginas internas da viagem */
 export function getTripCoverStyle(profile) {
   return {
     background: COVERS[profile] || COVERS.urban,
+  };
+}
+
+/** Foto por perfil — usado apenas nos cards da tela inicial */
+export function getTripCardCoverStyle(profile) {
+  const image = CARD_COVER_IMAGES[profile] || CARD_COVER_IMAGES.urban;
+  return {
+    backgroundImage: `url(${image})`,
   };
 }
 

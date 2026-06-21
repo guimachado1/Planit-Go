@@ -111,7 +111,8 @@ export function TripBudgetPage() {
             <div className="card__header">
               <h2 className="card__title">Ajuste manual</h2>
               <p className="card__desc">
-                Valores sugeridos pelo backend. Ajuste antes de salvar; a validação final é feita na API.
+                O sistema sugere uma divisão do orçamento com base no seu perfil de viagem. Você pode
+                alterar os valores de cada categoria como preferir antes de confirmar.
               </p>
             </div>
             <div className="card__body">

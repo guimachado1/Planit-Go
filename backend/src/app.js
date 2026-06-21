@@ -5,6 +5,7 @@ import authRoutes from './routes/auth.routes.js';
 import metaRoutes from './routes/meta.routes.js';
 import tripRoutes from './routes/trip.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { apiRateLimit } from './middleware/rateLimit.js';
 import { env } from './config/env.js';
 
 const app = express();
@@ -25,6 +26,7 @@ app.use(
   })
 );
 app.use(express.json({ limit: '1mb' }));
+app.use('/api', apiRateLimit);
 
 app.get('/health', (_req, res) => {
   res.json({ ok: true, service: 'planit-go-api' });

@@ -1,5 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { getTripCoverStyle, getTripStatus, resolveTripDisplayStatus } from './tripVisuals.js';
+import {
+  getTripCardCoverStyle,
+  getTripCoverStyle,
+  getTripStatus,
+  resolveTripDisplayStatus,
+} from './tripVisuals.js';
 
 describe('getTripCoverStyle', () => {
   it('retorna gradiente do perfil', () => {
@@ -10,6 +15,19 @@ describe('getTripCoverStyle', () => {
   it('usa urban como fallback', () => {
     const style = getTripCoverStyle('desconhecido');
     expect(style.background).toContain('#0369a1');
+  });
+});
+
+describe('getTripCardCoverStyle', () => {
+  it('retorna imagem do perfil', () => {
+    const style = getTripCardCoverStyle('beach');
+    expect(style.backgroundImage).toContain('unsplash.com');
+    expect(style.backgroundImage).toContain('photo-1507525428034');
+  });
+
+  it('usa urban como fallback', () => {
+    const style = getTripCardCoverStyle('desconhecido');
+    expect(style.backgroundImage).toContain('photo-1480714378408');
   });
 });
 

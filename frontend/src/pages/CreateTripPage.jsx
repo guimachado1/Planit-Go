@@ -5,9 +5,11 @@ import { AppShell } from '../components/layout/AppShell.jsx';
 import { TRIP_PROFILES } from '../constants/tripProfiles.js';
 import * as tripsApi from '../api/trips.js';
 import { getApiErrorMessage } from '../utils/errors.js';
+import { getTodayInputDate } from '../utils/format.js';
 
 export function CreateTripPage() {
   const navigate = useNavigate();
+  const today = getTodayInputDate();
   const [destination, setDestination] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -27,6 +29,11 @@ export function CreateTripPage() {
 
     if (new Date(startDate) > new Date(endDate)) {
       setError('A data final deve ser maior ou igual à data inicial.');
+      return;
+    }
+
+    if (startDate < today) {
+      setError('A data de ida não pode ser anterior a hoje.');
       return;
     }
 
@@ -110,6 +117,7 @@ export function CreateTripPage() {
                     id="startDate"
                     type="date"
                     value={startDate}
+                    min={today}
                     onChange={(e) => setStartDate(e.target.value)}
                     required
                   />
@@ -120,7 +128,7 @@ export function CreateTripPage() {
                     id="endDate"
                     type="date"
                     value={endDate}
-                    min={startDate || undefined}
+                    min={startDate || today}
                     onChange={(e) => setEndDate(e.target.value)}
                     required
                   />

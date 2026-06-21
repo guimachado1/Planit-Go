@@ -202,6 +202,22 @@ test('data final antes da inicial é rejeitada', () => {
   );
 });
 
+test('datas no passado na criação são rejeitadas', () => {
+  assert.throws(
+    () =>
+      validateCreateTripPayload({
+        destination: 'Teste',
+        startDate: '2020-01-01',
+        endDate: '2020-01-05',
+        totalBudget: 1000,
+        profile: 'urban',
+      }),
+    (err) =>
+      err instanceof AppError &&
+      err.message.includes('não pode ser anterior a hoje')
+  );
+});
+
 test('validateUpdateTripPayload aceita datas válidas', () => {
   const result = validateUpdateTripPayload({
     startDate: '2026-08-01',
