@@ -82,7 +82,7 @@ Gatilho: push na branch `main` com mudanças em `backend/**` ou no próprio work
 ### Container
 
 - **Entrypoint:** `docker-entrypoint.sh` — roda migrations e inicia `npm start`.
-- **Health check:** `GET /health` → `{ "ok": true }`.
+- **Health check:** https://pl-ff991c3a68c443babd649f987729d590.ecs.sa-east-1.on.aws/health → `{ "ok": true }`.
 
 ---
 
@@ -116,7 +116,7 @@ Use quando precisar publicar imagem sem passar pelo GitHub Actions.
 
 - [ ] `https://www.planitgo.site` carrega o frontend
 - [ ] Login e cadastro funcionam
-- [ ] `GET <API_URL>/health` retorna `ok: true`
+- [ ] [Health check](https://pl-ff991c3a68c443babd649f987729d590.ecs.sa-east-1.on.aws/health) retorna `ok: true`
 - [ ] New Relic recebe transações da API
 - [ ] SonarCloud e CI verdes na `main`
 
