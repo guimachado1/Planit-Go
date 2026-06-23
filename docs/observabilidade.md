@@ -10,7 +10,7 @@ Este documento explica como a API em produção é monitorada com **New Relic AP
 |------|-------|
 | **Produto** | New Relic APM (Application Performance Monitoring) |
 | **Aplicação** | Planit Go API |
-| **Console** | https://one.newrelic.com/ |
+| **Console** | https://onenr.io/07jb4GpL7wy |
 | **Escopo** | Backend (API Node.js no ECS) |
 
 ## Implementação

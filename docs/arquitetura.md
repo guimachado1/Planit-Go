@@ -1,6 +1,10 @@
 # Arquitetura e RFC — Planit Go
 
-Documentação técnica da solução para revisão no repositório: visão geral, requisitos funcionais, decisões de arquitetura e mapeamento para o código-fonte. Não é necessário ambiente local para entender a estrutura; para executar localmente, veja [desenvolvimento.md](./desenvolvimento.md).
+Documentação técnica da solução para revisão no repositório: visão geral, requisitos funcionais, decisões de arquitetura e mapeamento para o código-fonte.
+
+> **RFC formal (PDF):** [RFC_PlanitGo.pdf](./RFC_PlanitGo.pdf) — documento acadêmico completo do projeto. Este arquivo (`arquitetura.md`) é um resumo navegável no GitHub, com diagramas e links para o código.
+
+Não é necessário ambiente local para entender a estrutura; para executar localmente, veja [desenvolvimento.md](./desenvolvimento.md).
 
 ---
 

@@ -51,17 +51,4 @@ Necessário quando quem revisa não tem login no New Relic.
 
 ---
 
-## Para quem mantém o repositório — como adicionar prints
-
-1. Tire a captura (PNG ou JPG).
-2. Salve na subpasta com nome descritivo, por exemplo:
-   - `sonar/01-overview.png`
-   - `newrelic/01-apm-dashboard.png`
-   - `github-actions/01-ci-success.png`
-3. Faça commit e push.
-
-Os links desta página **não precisam** ser atualizados a cada deploy — permanecem estáveis enquanto o projeto e os workflows não mudarem de nome.
-
----
-
 [← Voltar à entrega](../ENTREGA.md)

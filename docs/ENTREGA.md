@@ -25,7 +25,7 @@ Este é o **ponto de entrada** da documentação. Foi escrito para **revisão au
 | 2 | Repositório público (GitHub) | [github.com/guimachado1/Planit-Go](https://github.com/guimachado1/Planit-Go) | ✅ |
 | 3 | Documentação de uso (fluxos principais) | [manual-usuario.md](./manual-usuario.md) | ✅ |
 | 4 | Usuários e senhas de teste | [Credenciais de teste](#credenciais-de-teste) neste arquivo | ✅ |
-| 5 | Documentação técnica / RFC | [arquitetura.md](./arquitetura.md) | ✅ |
+| 5 | Documentação técnica / RFC | [RFC_PlanitGo.pdf](./RFC_PlanitGo.pdf) (documento formal) · resumo em [arquitetura.md](./arquitetura.md) | ✅ |
 | 6 | SonarCloud / qualidade de código | [qualidade.md](./qualidade.md) ou [SonarCloud](https://sonarcloud.io/project/overview?id=guimachado1_Planit-Go) · prints em [evidencias/sonar/](./evidencias/sonar/) | ✅ |
 | 7 | Monitoramento / observabilidade | [observabilidade.md](./observabilidade.md) · prints em [evidencias/newrelic/](./evidencias/newrelic/) | ✅ |
 | 8 | CI/CD (build, testes, deploy) | [ci-cd.md](./ci-cd.md) ou [GitHub Actions](https://github.com/guimachado1/Planit-Go/actions) · prints em [evidencias/github-actions/](./evidencias/github-actions/) | ✅ |
@@ -75,7 +75,8 @@ Detalhes de cada tela em [manual-usuario.md](./manual-usuario.md).
 | Documento | Conteúdo |
 |-----------|----------|
 | [manual-usuario.md](./manual-usuario.md) | Guia de uso e fluxos da aplicação |
-| [arquitetura.md](./arquitetura.md) | RFC técnica, requisitos, diagramas |
+| [RFC_PlanitGo.pdf](./RFC_PlanitGo.pdf) | **RFC formal do projeto** (PDF) |
+| [arquitetura.md](./arquitetura.md) | Resumo técnico no repositório — requisitos, diagramas, código |
 | [desenvolvimento.md](./desenvolvimento.md) | Setup local, testes, variáveis de ambiente |
 | [deploy.md](./deploy.md) | Infraestrutura AWS (Amplify, ECS, RDS) |
 | [qualidade.md](./qualidade.md) | SonarCloud, cobertura de testes |
@@ -97,7 +98,6 @@ Cada requisito pode ser conferido de duas formas: **link ao vivo** (quando a fer
 | **GitHub Actions (Sonar)** | [Workflow SonarCloud](https://github.com/guimachado1/Planit-Go/actions/workflows/sonar.yml) | [evidencias/github-actions/](./evidencias/github-actions/) | Público |
 | **GitHub Actions (Deploy)** | [Workflow Deploy API](https://github.com/guimachado1/Planit-Go/actions/workflows/deploy-api.yml) · [Deployments production](https://github.com/guimachado1/Planit-Go/deployments) | [evidencias/github-actions/](./evidencias/github-actions/) | Público |
 | **New Relic APM** | [one.newrelic.com](https://one.newrelic.com/) → APM → *Planit Go API* | [evidencias/newrelic/](./evidencias/newrelic/) | Exige login New Relic; use os prints se não tiver conta |
-| **RFC (PDF)** | — | [RFC_PlanitGo.pdf](./RFC_PlanitGo.pdf) | Arquivo no repositório |
 
 Detalhes do que capturar em cada pasta: [evidencias/README.md](./evidencias/README.md).
 

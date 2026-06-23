@@ -121,7 +121,7 @@ Cada perfil distribui automaticamente o orçamento total entre as categorias:
 Verifique se a nova data de fim não é anterior à de início e se não há gastos ou itens de itinerário fora do novo período.
 
 **Sessão expirou**  
-O token JWT expira após 7 dias (configuração padrão). Faça login novamente.
+O token JWT expira após 1 dia (configuração padrão). Faça login novamente.
 
 **A API não responde**  
 Confirme sua conexão. Em produção, a API roda na AWS ECS; o frontend está no Amplify.

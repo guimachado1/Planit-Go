@@ -30,7 +30,8 @@ Permitir que o usuário planeje viagens de forma organizada — destino, datas, 
 |-----------|-----------|
 | [**docs/ENTREGA.md**](./docs/ENTREGA.md) | **Ponto de entrada para revisão** — checklist, credenciais demo, links e ordem de leitura |
 | [docs/manual-usuario.md](./docs/manual-usuario.md) | Guia de uso e fluxos da aplicação |
-| [docs/arquitetura.md](./docs/arquitetura.md) | RFC técnica, requisitos, diagramas |
+| [docs/RFC_PlanitGo.pdf](./docs/RFC_PlanitGo.pdf) | RFC formal do projeto (PDF) |
+| [docs/arquitetura.md](./docs/arquitetura.md) | Resumo técnico — requisitos, diagramas, código |
 | [docs/desenvolvimento.md](./docs/desenvolvimento.md) | Setup local, testes, variáveis de ambiente |
 | [docs/deploy.md](./docs/deploy.md) | Infraestrutura AWS (Amplify, ECS, RDS) |
 | [docs/qualidade.md](./docs/qualidade.md) | SonarCloud e cobertura de testes |
