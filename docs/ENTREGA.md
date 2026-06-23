@@ -38,7 +38,7 @@ Este é o **ponto de entrada** da documentação. Foi escrito para **revisão au
 |---------|-----|
 | **Aplicação (produção)** | https://www.planitgo.site |
 | **API (produção)** | Configurada no Amplify via `VITE_API_URL` (ECS Fargate) |
-| **Health check da API** | `GET /health` na URL da API |
+| **Health check da API** | https://pl-ff991c3a68c443babd649f987729d590.ecs.sa-east-1.on.aws/health |
 | **Repositório** | https://github.com/guimachado1/Planit-Go |
 | **GitHub Actions** | https://github.com/guimachado1/Planit-Go/actions |
 | **Deploys (ambiente production)** | https://github.com/guimachado1/Planit-Go/deployments |
